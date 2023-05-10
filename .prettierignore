@@ -1,0 +1,5 @@
+dist/
+lib/
+node_modules/
+src/action.config.args.ts
+src/action.config.type.ts

@@ -1,0 +1,1753 @@
+{
+  "additions": 36540,
+  "assignees": [],
+  "author": {
+    "id": "MDQ6VXNlcjI2NDQ0MzEy",
+    "is_bot": false,
+    "login": "MaybeJustJames",
+    "name": "James Collier"
+  },
+  "baseRefName": "develop",
+  "body": "This branch begins a large-scale move of the app to redux and redux sagas for state management. It also restructures the app in a way I think is easier to navigate and think about.\r\n\r\n### Cleanup\r\n* Webpack config based on [this](https://github.com/taniarascia/webpack-boilerplate).\r\n* Remove unnecessary/unused build machinery and unused files.\r\n* Remove Google Analytics integration\r\n* Dynamically generate artifact and use default WebPack output directory\r\n* Update most dependencies, removed unused or unnecessary dependincies\r\n* Add a script to visualise the size of the compiled build artifact (bundle-size-analyse)\r\n* Use ts-loader rather than babel to compile ts/tsx (type-checking)\r\n* Upgrade to webpack 5\r\n* Remove reliance on polyfilled Node APIs (path and zip)\r\n* Add linting for use of abstract equality and block delimiters with braces\r\n* Add tests for the front-end using Jest and react-testing-library. Including tests for `fetch()` And GProfiler previously introduced.\r\n* Use `jest-css-modules-transform` to handle imports for CSS. Version is intentionally pinned as \"4.0.2\" breaks tests.\r\n* Wrap the old API in a scary `LegacyAPI` name\r\n* Extract some of the complexity in the `App` component in new `Main` and `FullPageNotify` components.\r\n* Turn on strict TypeScript type checking and fix all type errors.\r\n* Remove as much CSS as possible and simplify DOM structure\r\n* Introduce a TEST_ONLY flag to avoid hard-to-test side-effects from the legacy API while testing.\r\n* Add local CSS imported only by the component that uses it.\r\n* Remove as many uses of Lodash as possible\r\n* Add a utility function `zipLists` to `zip()` a list of lists.\r\n* Refactor the UploadModal to be responsive.\r\n* Reduce use of `default exports`\r\n\r\n### Code structure and redesign\r\n* Document code style and design decisions in CONTRIBUTING.md\r\n* Change the structure of `getFeature()` requests and responses\r\n* Add a \"filter by type/category\" argument to `getFeature()` requests\r\n* Redisign of FeatureSearchBox components following the guidelines outlines in CONTRIBUTING.md\r\n* LegacyAPI no longer tracks UUID, sessionMode, sidebar visibility, and cookie consent. These have been moved to Redux.\r\n* Wire in Redux to existing components where useful.\r\n* Use `immer` to update Redux state.\r\n* Add a `Result` type similar to the backend `Result` type.\r\n\r\n### UI\r\n* Viewer component is now responsive and does less work to render data\r\n* Redisign of UI, the whole UI is a little more responsive and more traditionally \"single-page\".\r\n* Centre the Welcome page and make it scrollable.\r\n\r\n### Breaking changes and known issues\r\n* Does not keep (removes) the functionality for \"locking\" related search entries on searches like \"batch\" and \"All clusters\" (#447)\r\n* ~~This PR breaks ViewerSidebar \"Clustering Controls\". Fixing this is out of scope for the PR, this should instead be fixed after @dweemx cleanup of the ViewerSidebar is merged.~~\r\n* Lasso selections are not \"remembered\" when switching between tabs.\r\n* The Babel config file is necessary for Jest. It duplicates the webpack config. If you have a solution to remove the duplication please let me know.\r\n* [VISUAL/STYLING] Annotation voting popup does not persist on mouseover (#427)\r\n* ~~Compare tab break when performing a DnD of one of the annotation onto a viewer.~~\r\n* [VISUAL/STYLING] Styling changes cause text to overlap in many locations (i.e. Loom selection in sidebar) (#428)\r\n* [BREAKING] Getting metadata from a cell section fails (#429)\r\n* [MINOR] Settings in sidebar do not display when selecting a loom, only after selecting a gene or changing loom (#430) \r\n* [BREAKING] Selecting a cluster in the results, always selects the first result by name (#431)\r\n* [BREAKING] Adding annotations fails with python error (#432)\r\n* [MINOR] Annotation labels remain after clearing feature (#433)\r\n* [VISUAL/STYLING] Regulon tab plots done fill screen (#434)\r\n* [MAJOR] Selecting a regulon causes an infinite loop in the backend (#435)\r\n* [BREAKING] Regulon histogram never displays data (#436)\r\n* [MAJOR] Unable to search for clusters by annotation name (#437)\r\n* [MINOR] Permalink button does nothing (#438)\r\n* [MAJOR] Compare tab does not work with more that one annotation per viewer (#439)",
+  "changedFiles": 109,
+  "closed": true,
+  "closedAt": "2021-05-28T08:23:55Z",
+  "comments": [
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDcxNTA5MDAyNg==",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "Add PR summary points to documentation (conribution manual??)",
+      "createdAt": "2020-10-23T07:42:19Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-715090026",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDcxNjU2ODQxMw==",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "/!\\ I noticed that `<- Pevious` and  `Next ->` buttons of the cluster controls (right side bar) don't work anymore. They work in the `master` branch",
+      "createdAt": "2020-10-26T14:05:36Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-716568413",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDc0MDUyMzMxNQ==",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "> /!\\ I noticed that `<- Pevious` and `Next ->` buttons of the cluster controls (right side bar) don't work anymore. They work in the `master` branch\r\n\r\nReproductions steps:\r\n1. Query \"Unannotated Cluster 0\"\r\n1. Click on \"Next ->\" button in the right side bar should take you to the next cluster i.e.: \"Unannotated Cluster 1\"\r\n1. Click on \"<- Previous\" button in the right side bar should take you to the previous cluster i.e.: \"Unannotated Cluster 0\"",
+      "createdAt": "2020-12-08T10:09:53Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-740523315",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDgxMjQ3MzY4OA==",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "@dweemx wrt an `.nvmrc` Node 10 is EOL end of this month. I'm fine leaving this out. What about you?",
+      "createdAt": "2021-04-02T10:31:14Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-812473688",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDgxMjQ3NDcyNw==",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "@dweemx Can you elaborate on what \"switch from loom\" means?",
+      "createdAt": "2021-04-02T10:34:27Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-812474727",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDgxMjQ4NTAzOQ==",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "> @dweemx wrt an `.nvmrc` Node 10 is EOL end of this month. I'm fine leaving this out. What about you?\r\n\r\nYou mean not having a `.nvmrc` file or just upgrade to use higher Node version ?",
+      "createdAt": "2021-04-02T11:09:36Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-812485039",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDgxMjUxMTAyMA==",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "> > @dweemx wrt an `.nvmrc` Node 10 is EOL end of this month. I'm fine leaving this out. What about you?\r\n> \r\n> You mean not having a `.nvmrc` file or just upgrade to use higher Node version ?\r\n\r\nNo I mean it's a users fault if they use an EOL node version. So why have an `.nvmrc`?",
+      "createdAt": "2021-04-02T12:34:39Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-812511020",
+      "viewerDidAuthor": false
+    },
+    {
+      "id": "MDEyOklzc3VlQ29tbWVudDgxNTA1MzQzOA==",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "> > > @dweemx wrt an `.nvmrc` Node 10 is EOL end of this month. I'm fine leaving this out. What about you?\r\n> > \r\n> > \r\n> > You mean not having a `.nvmrc` file or just upgrade to use higher Node version ?\r\n> \r\n> No I mean it's a users fault if they use an EOL node version. So why have an `.nvmrc`?\r\n\r\nBecause the user will be sure that the software will work with that version of Node. ",
+      "createdAt": "2021-04-07T16:30:26Z",
+      "includesCreatedEdit": true,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/aertslab/SCope/pull/381#issuecomment-815053438",
+      "viewerDidAuthor": false
+    }
+  ],
+  "commits": [
+    {
+      "authoredDate": "2020-08-13T14:49:05Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:20Z",
+      "messageBody": "* Move to typescript\n* Remove unnecessary and unused code\n* Upgrade semantic-ui-react to a more recent version\n* Re-organise some dependant code\n* Update packages and install immer",
+      "messageHeadline": "Simplify and organise the FeatureSearchBox component",
+      "oid": "1b9216d8b9d228c727c3e5736c5daaab2fe0c78f"
+    },
+    {
+      "authoredDate": "2020-08-14T12:10:02Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:29Z",
+      "messageBody": "",
+      "messageHeadline": "Us ESLint to replace use of `let` with `const` where possible",
+      "oid": "53d6870ec4fd54c89c83dd478fe11825f22a6c37"
+    },
+    {
+      "authoredDate": "2020-08-25T07:00:03Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:29Z",
+      "messageBody": "This can be used to only search for genes or regulons, etc. that match\nthe search query rather than everything that matches the search query.\n\n* Add \"MENU\" text to the header menu button\n* Default session mode should be \"read\"\n* Remove dropdown on the FeatureSearchBox. Filter is imposed by the\n  page and is not user selectable.\n* Adjust getFeatures gRPC/protocol buffers interface\n* Modify the gRPC definition of getFeatures to be more convenient\n* Fix a react warning\n     The warning triggered when trying to update the old state management\n     system using onResultSelect() while rendering. This is a no-no\n     so now it just calls the old state management update API.\n     This also moves remaining logic out of the component\n* Do some error handling\n* Some documentation",
+      "messageHeadline": "Implement filtering in the FeatureSearchBox",
+      "oid": "8c6c87ba4bbf3d46d52dcb7bbada7e6bcf19e3a0"
+    },
+    {
+      "authoredDate": "2020-09-14T09:03:34Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:30Z",
+      "messageBody": "* Add basic Saga side-effect generation testing\n* Add Reducer type annotation (thanks @dweemx)\n* Use a clearer variable name for search results\n* Prefer `type` over `interface`\n* Use constants in App\n* The name \"handleUpdateScatterPlot\" is a more accurate than \"handleUpdateTSNE\"\n* Do not open the bundle analyzer by default\n* Bump semantic-ui-react version\n* use Sagas debounce() rather than throttle()\n* Remove unused import of lodash\n* Fix bug: Cannot model category as strict type, revert to string\n* Fix bug: Correct ordering in displayed search results",
+      "messageHeadline": "Add some testing for the Search related components",
+      "oid": "74f7dad14a74ca6b866d857406bf23584ebbbd2d"
+    },
+    {
+      "authoredDate": "2020-11-02T16:13:44Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:50Z",
+      "messageBody": "* Add some tests\n* Wire up redux hooks and fix tests\n* Fix \"cancel\" button in search box\n* Track cookie consent in redux",
+      "messageHeadline": "Turn on strict type checking and start fixing errors",
+      "oid": "f4df49b536783683828696f4e4500165f87ab307"
+    },
+    {
+      "authoredDate": "2020-11-04T10:03:53Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:50Z",
+      "messageBody": "",
+      "messageHeadline": "Wrap filenames in the AppSidebar",
+      "oid": "b4842a01f6c29fc143dc75a89fc01c07beb04d4b"
+    },
+    {
+      "authoredDate": "2020-11-04T10:33:38Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:51Z",
+      "messageBody": "So that users immediately see where to load their data.\nAlso centres content in the Welcome screen so still\nvisible with the sidebar open.",
+      "messageHeadline": "Display the sidebar by default",
+      "oid": "9e5515266e081a95125f6a6129e69820921c59c4"
+    },
+    {
+      "authoredDate": "2020-11-12T15:23:52Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:11:52Z",
+      "messageBody": "* Remove all uses of abstract (in)equality\n     Abstract (in)equality is not type-safe and leads to\n     weird type coercion.\n* eslint eqeqeq check\n* Enforce all blocks should have brace delimiters\n* Move definition of FEATURE_COLOURS constant\n* Remove GeneSet page\n* Use ts-loader instead of babel for typescript (ts-loader does type checking)\n* Use pako for zlib compression\n* Replace some uses of Lodash with Ramda\n* Upgrade from Webpack 4 to Webpack 5\n* Add another zipLists test\n* Looping requests when selecting search result\n  \"Unnannotated clustrer 0\"\n* UI disappears when ViewerSidebar is too tall\n* Fix non-display of data in gene tab\n* Add a contributing file\n* Add a new contributing style rule",
+      "messageHeadline": "Remove a lot of unused/unnecessary scaffolding",
+      "oid": "73756b02ae0e0874935846d9d2a8d0944e1702bb"
+    },
+    {
+      "authoredDate": "2021-03-31T09:11:33Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:06Z",
+      "messageBody": "Concern for discoverability with the sidebar defaulted to hidden means\nthat it should default to visible. The animation can make styling the\nrest of the app difficult. So this commit reduces/removes these\ncomplexities by making the sidebar permanently visible.\n\n* Finally remove the bin/ directory",
+      "messageHeadline": "Make the sidebar permanently visible.",
+      "oid": "7f3152b27fe4191f3ef345c11e4ce94f8dbf1d1f"
+    },
+    {
+      "authoredDate": "2021-03-31T10:08:28Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:06Z",
+      "messageBody": "",
+      "messageHeadline": "npm audit found a high severity vuln",
+      "oid": "ad30c518d93116c6ee70e2b2bb6d56f9e886eeb4"
+    },
+    {
+      "authoredDate": "2021-03-31T15:44:54Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:06Z",
+      "messageBody": "",
+      "messageHeadline": "Properly seperate webpack dev and prod configurations",
+      "oid": "0f83545daea668a00f9fdfef6349cb0138dc9298"
+    },
+    {
+      "authoredDate": "2021-04-02T10:23:59Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:07Z",
+      "messageBody": "GServer.py::getNextCluster had not been updated to match the\nchange in results returned by get_search_results(). This issue is\nfixed along with having ViewerSidebar dispatch the Search 'SELECT'\naction. This action updates the search box ui.",
+      "messageHeadline": "Fix bug moving between clusters using 'next' and 'previous' buttons",
+      "oid": "55bc0628f1c9a7417ccb5f7afa40fadb71a7a1a5"
+    },
+    {
+      "authoredDate": "2021-04-12T11:26:09Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:07Z",
+      "messageBody": "",
+      "messageHeadline": "Make sure display is updated when switching loom or coordinates",
+      "oid": "41d48a86c417de33a5d1ce46c5520bc539e44476"
+    },
+    {
+      "authoredDate": "2021-04-12T11:58:06Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:07Z",
+      "messageBody": "",
+      "messageHeadline": "Don't show Cluster Marker table when active feature is: All Clusters",
+      "oid": "57bf4eb9bfece2add9d06b124470d77a3fd6e60f"
+    },
+    {
+      "authoredDate": "2021-04-12T12:54:40Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:12:08Z",
+      "messageBody": "",
+      "messageHeadline": "Make sure the annotations page can be displayed",
+      "oid": "dd2a97794b5ee6f68038ee04e17139387f80de55"
+    },
+    {
+      "authoredDate": "2021-05-28T08:19:36Z",
+      "authors": [
+        {
+          "email": "james.collier@vib.be",
+          "id": "MDQ6VXNlcjI2NDQ0MzEy",
+          "login": "MaybeJustJames",
+          "name": "James Collier"
+        }
+      ],
+      "committedDate": "2021-05-28T08:19:36Z",
+      "messageBody": "",
+      "messageHeadline": "Update `dns-packet` dependency to fix an audit vuln",
+      "oid": "3f7f5fddc4ee634c3aec57f5ce1410a733990517"
+    }
+  ],
+  "createdAt": "2020-09-14T10:29:04Z",
+  "deletions": 13178,
+  "files": [
+    {
+      "path": ".github/workflows/continuous-integration-client.yml",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "additions": 21,
+      "deletions": 0
+    },
+    {
+      "path": "README.md",
+      "additions": 5,
+      "deletions": 13
+    },
+    {
+      "path": "babel.config.js",
+      "additions": 15,
+      "deletions": 0
+    },
+    {
+      "path": "bin/configure.js",
+      "additions": 0,
+      "deletions": 6
+    },
+    {
+      "path": "bin/install.js",
+      "additions": 0,
+      "deletions": 18
+    },
+    {
+      "path": "bin/launch.js",
+      "additions": 0,
+      "deletions": 320
+    },
+    {
+      "path": "bin/utils.js",
+      "additions": 0,
+      "deletions": 80
+    },
+    {
+      "path": "config/paths.js",
+      "additions": 9,
+      "deletions": 0
+    },
+    {
+      "path": "config/webpack.common.js",
+      "additions": 120,
+      "deletions": 0
+    },
+    {
+      "path": "config/webpack.dev.js",
+      "additions": 31,
+      "deletions": 0
+    },
+    {
+      "path": "config/webpack.prod.js",
+      "additions": 24,
+      "deletions": 0
+    },
+    {
+      "path": "index.js",
+      "additions": 0,
+      "deletions": 540
+    },
+    {
+      "path": "opt/scopeserver/bindserver/package-lock.json",
+      "additions": 831,
+      "deletions": 9
+    },
+    {
+      "path": "opt/scopeserver/dataserver/modules/gserver/GServer.py",
+      "additions": 30,
+      "deletions": 19
+    },
+    {
+      "path": "opt/scopeserver/dataserver/modules/gserver/s_pb2.py",
+      "additions": 305,
+      "deletions": 178
+    },
+    {
+      "path": "opt/scopeserver/dataserver/modules/gserver/s_pb2.pyi",
+      "additions": 46,
+      "deletions": 13
+    },
+    {
+      "path": "opt/scopeserver/dataserver/modules/pserver/PServer.py",
+      "additions": 1,
+      "deletions": 3
+    },
+    {
+      "path": "opt/scopeserver/dataserver/utils/data.py",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "path": "opt/scopeserver/dataserver/utils/labels.py",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "path": "opt/scopeserver/dataserver/utils/loom.py",
+      "additions": 2,
+      "deletions": 8
+    },
+    {
+      "path": "opt/scopeserver/dataserver/utils/search.py",
+      "additions": 47,
+      "deletions": 26
+    },
+    {
+      "path": "opt/scopeserver/result.py",
+      "additions": 0,
+      "deletions": 2
+    },
+    {
+      "path": "package-lock.json",
+      "additions": 31303,
+      "deletions": 8281
+    },
+    {
+      "path": "package.json",
+      "additions": 113,
+      "deletions": 88
+    },
+    {
+      "path": "src/api/error.ts",
+      "additions": 7,
+      "deletions": 0
+    },
+    {
+      "path": "src/api/features.ts",
+      "additions": 48,
+      "deletions": 0
+    },
+    {
+      "path": "src/api/fetch.test.ts",
+      "additions": 76,
+      "deletions": 0
+    },
+    {
+      "path": "src/api/fetch.ts",
+      "additions": 10,
+      "deletions": 6
+    },
+    {
+      "path": "src/api/index.ts",
+      "additions": 2,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/App.jsx",
+      "additions": 153,
+      "deletions": 354
+    },
+    {
+      "path": "src/components/AppContent.jsx",
+      "additions": 0,
+      "deletions": 25
+    },
+    {
+      "path": "src/components/AppHeader.jsx",
+      "additions": 35,
+      "deletions": 71
+    },
+    {
+      "path": "src/components/AppSidebar.jsx",
+      "additions": 44,
+      "deletions": 93
+    },
+    {
+      "path": "src/components/GProfiler/GProfilerModal.tsx",
+      "additions": 27,
+      "deletions": 11
+    },
+    {
+      "path": "src/components/GProfiler/TopGeneListsSelectionTable.tsx",
+      "additions": 4,
+      "deletions": 6
+    },
+    {
+      "path": "src/components/GProfiler/link.test.ts",
+      "additions": 22,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/GProfiler/link.ts",
+      "additions": 24,
+      "deletions": 13
+    },
+    {
+      "path": "src/components/GProfiler/model.ts",
+      "additions": 27,
+      "deletions": 31
+    },
+    {
+      "path": "src/components/GProfiler/reducer.ts",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "path": "src/components/GProfiler/sagas.ts",
+      "additions": 6,
+      "deletions": 12
+    },
+    {
+      "path": "src/components/Main.tsx",
+      "additions": 104,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/FeatureSearch.tsx",
+      "additions": 46,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/FeatureSearchBox.css",
+      "additions": 12,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/FeatureSearchBox.test.tsx",
+      "additions": 66,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/FeatureSearchBox.tsx",
+      "additions": 192,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/Search.test.ts",
+      "additions": 224,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/actionTypes.ts",
+      "additions": 7,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/actions.ts",
+      "additions": 91,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/constants.ts",
+      "additions": 5,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/effects.test.ts",
+      "additions": 98,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/effects.ts",
+      "additions": 25,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/index.ts",
+      "additions": 15,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/model.ts",
+      "additions": 102,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/reducer.ts",
+      "additions": 69,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/Search/selectors.ts",
+      "additions": 46,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/common/API.jsx",
+      "additions": 186,
+      "deletions": 168
+    },
+    {
+      "path": "src/components/common/Annotation.jsx",
+      "additions": 10,
+      "deletions": 6
+    },
+    {
+      "path": "src/components/common/AnnotationDropContainer.jsx",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "path": "src/components/common/ClusterOverlapsTable.tsx",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "path": "src/components/common/ClusteringAddPopup.tsx",
+      "additions": 4,
+      "deletions": 4
+    },
+    {
+      "path": "src/components/common/CollabAnnoGeneSearch.jsx",
+      "additions": 23,
+      "deletions": 17
+    },
+    {
+      "path": "src/components/common/CollaborativeAnnotation.jsx",
+      "additions": 34,
+      "deletions": 34
+    },
+    {
+      "path": "src/components/common/FeatureSearchBox.jsx",
+      "additions": 0,
+      "deletions": 303
+    },
+    {
+      "path": "src/components/common/FeatureSearchInput.jsx",
+      "additions": 0,
+      "deletions": 69
+    },
+    {
+      "path": "src/components/common/Histogram.jsx",
+      "additions": 26,
+      "deletions": 30
+    },
+    {
+      "path": "src/components/common/Metadata.jsx",
+      "additions": 29,
+      "deletions": 45
+    },
+    {
+      "path": "src/components/common/OLSAutocomplete.jsx",
+      "additions": 6,
+      "deletions": 2
+    },
+    {
+      "path": "src/components/common/OptionsPopup.tsx",
+      "additions": 20,
+      "deletions": 19
+    },
+    {
+      "path": "src/components/common/UploadModal.jsx",
+      "additions": 49,
+      "deletions": 60
+    },
+    {
+      "path": "src/components/common/Uploader.jsx",
+      "additions": 7,
+      "deletions": 4
+    },
+    {
+      "path": "src/components/common/Viewer.jsx",
+      "additions": 251,
+      "deletions": 368
+    },
+    {
+      "path": "src/components/common/ViewerDropContainer.jsx",
+      "additions": 11,
+      "deletions": 5
+    },
+    {
+      "path": "src/components/common/ViewerSidebar.css",
+      "additions": 9,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/common/ViewerSidebar.jsx",
+      "additions": 230,
+      "deletions": 176
+    },
+    {
+      "path": "src/components/common/ViewerToolbar.jsx",
+      "additions": 38,
+      "deletions": 36
+    },
+    {
+      "path": "src/components/constants.ts",
+      "additions": 10,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/pages/Annotations.jsx",
+      "additions": 6,
+      "deletions": 6
+    },
+    {
+      "path": "src/components/pages/Compare.jsx",
+      "additions": 192,
+      "deletions": 221
+    },
+    {
+      "path": "src/components/pages/Expression.jsx",
+      "additions": 0,
+      "deletions": 102
+    },
+    {
+      "path": "src/components/pages/FullPageNotify.tsx",
+      "additions": 74,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/pages/Gene.jsx",
+      "additions": 23,
+      "deletions": 60
+    },
+    {
+      "path": "src/components/pages/Geneset.jsx",
+      "additions": 0,
+      "deletions": 420
+    },
+    {
+      "path": "src/components/pages/Regulon.jsx",
+      "additions": 76,
+      "deletions": 85
+    },
+    {
+      "path": "src/components/pages/Welcome.jsx",
+      "additions": 352,
+      "deletions": 336
+    },
+    {
+      "path": "src/components/pages/index.ts",
+      "additions": 21,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/pages/pages.css",
+      "additions": 19,
+      "deletions": 0
+    },
+    {
+      "path": "src/components/utils.ts",
+      "additions": 6,
+      "deletions": 0
+    },
+    {
+      "path": "src/css/header.css",
+      "additions": 1,
+      "deletions": 5
+    },
+    {
+      "path": "src/css/sidebar.css",
+      "additions": 2,
+      "deletions": 34
+    },
+    {
+      "path": "src/css/styles.css",
+      "additions": 17,
+      "deletions": 0
+    },
+    {
+      "path": "src/css/viewer.css",
+      "additions": 15,
+      "deletions": 144
+    },
+    {
+      "path": "src/js/http.js",
+      "additions": 1,
+      "deletions": 2
+    },
+    {
+      "path": "src/main.tsx",
+      "additions": 5,
+      "deletions": 4
+    },
+    {
+      "path": "src/proto/s.proto",
+      "additions": 10,
+      "deletions": 3
+    },
+    {
+      "path": "src/redux/actionTypes.ts",
+      "additions": 6,
+      "deletions": 0
+    },
+    {
+      "path": "src/redux/actions.ts",
+      "additions": 19,
+      "deletions": 6
+    },
+    {
+      "path": "src/redux/reducers/index.ts",
+      "additions": 4,
+      "deletions": 0
+    },
+    {
+      "path": "src/redux/reducers/main.ts",
+      "additions": 21,
+      "deletions": 16
+    },
+    {
+      "path": "src/redux/sagas/index.ts",
+      "additions": 2,
+      "deletions": 1
+    }
+  ],
+  "headRefName": "cleanup/373-frontend-stage3",
+  "headRefOid": "3f7f5fddc4ee634c3aec57f5ce1410a733990517",
+  "headRepository": {
+    "id": "MDEwOlJlcG9zaXRvcnkxMjEzNjYxMDI=",
+    "name": "SCope"
+  },
+  "headRepositoryOwner": {
+    "id": "MDEyOk9yZ2FuaXphdGlvbjM5NDA4MTc=",
+    "login": "aertslab"
+  },
+  "id": "MDExOlB1bGxSZXF1ZXN0NDg2NTA4NTM3",
+  "isCrossRepository": false,
+  "isDraft": false,
+  "labels": [],
+  "latestReviews": [
+    {
+      "id": "",
+      "author": {
+        "login": "KrisDavie"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2021-05-28T07:37:17Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "APPROVED",
+      "commit": {
+        "oid": ""
+      }
+    },
+    {
+      "id": "",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2021-05-28T07:24:50Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "APPROVED",
+      "commit": {
+        "oid": ""
+      }
+    }
+  ],
+  "maintainerCanModify": false,
+  "mergeCommit": {
+    "oid": "8413fa7107ab109be119784b4bfd393da2788e91"
+  },
+  "mergeStateStatus": "UNKNOWN",
+  "mergeable": "UNKNOWN",
+  "mergedAt": "2021-05-28T08:23:55Z",
+  "mergedBy": {
+    "id": "MDQ6VXNlcjI2NDQ0MzEy",
+    "is_bot": false,
+    "login": "MaybeJustJames",
+    "name": "James Collier"
+  },
+  "milestone": null,
+  "number": 381,
+  "potentialMergeCommit": null,
+  "projectCards": [],
+  "projectItems": [],
+  "reactionGroups": [],
+  "reviewDecision": "APPROVED",
+  "reviewRequests": [],
+  "reviews": [
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDkxMjQ3MzEz",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Minor things that I picked up.\r\nOtherwise nice stuff in there: cleanup & testing :+1: \r\n\r\nExperienced a problem when trying to run SCope:\r\n```\r\n> SCope@1.8.2 dev ~/SCope/master\r\n> cross-env NODE_ENV=development NODE_TYPE=local webpack-dev-server --hot\r\n\r\n~/SCope/master/node_modules/terser-webpack-plugin/node_modules/p-limit/index.js:30\r\n\t\t} catch {}\r\n\t\t        ^\r\n\r\nSyntaxError: Unexpected token {\r\n    at new Script (vm.js:51:7)\r\n    at createScript (vm.js:136:10)\r\n    at Object.runInThisContext (vm.js:197:10)\r\n    at Module._compile (internal/modules/cjs/loader.js:618:28)\r\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:665:10)\r\n    at Module.load (internal/modules/cjs/loader.js:566:32)\r\n    at tryModuleLoad (internal/modules/cjs/loader.js:506:12)\r\n    at Function.Module._load (internal/modules/cjs/loader.js:498:3)\r\n    at Module.require (internal/modules/cjs/loader.js:598:17)\r\n    at require (internal/modules/cjs/helpers.js:11:18)\r\nnpm ERR! code ELIFECYCLE\r\nnpm ERR! errno 1\r\nnpm ERR! SCope@1.8.2 dev: `cross-env NODE_ENV=development NODE_TYPE=local webpack-dev-server --hot`\r\nnpm ERR! Exit status 1\r\nnpm ERR! \r\nnpm ERR! Failed at the SCope@1.8.2 dev script.\r\nnpm ERR! This is probably not a problem with npm. There is likely additional logging output above.\r\n\r\nnpm ERR! A complete log of this run can be found in:\r\nnpm ERR!    ~/.npm/_logs/2020-09-18T12_47_32_043Z-debug.lo\r\n```\r\neven after removing `node_modules` and `package-lock.json`",
+      "submittedAt": "2020-09-18T12:50:10Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "CHANGES_REQUESTED",
+      "commit": {
+        "oid": "c226293afce8c9e0ed2aa18da382a83f55c0a69a"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDkxNTY2NTQ2",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-09-18T15:25:32Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc0f1dfed570f9dbf38d813c611567da2cdcf2e6"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDkxNTY2Njg5",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-09-18T15:25:43Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc0f1dfed570f9dbf38d813c611567da2cdcf2e6"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDkxNTgyNzQw",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-09-18T15:46:03Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDkxNTg1NDEz",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2020-09-18T15:49:29Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDk1NDczMDU0",
+      "author": {
+        "login": "KrisDavie"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Really nice changes, but still some work to get it functional and user friendly.\r\n\r\nI couldn't exhaustively test the regulon/compare pages or the clusters etc. with the broken bits, will test them once they're functional.",
+      "submittedAt": "2020-09-24T13:34:26Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "CHANGES_REQUESTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDk1NjU3Nzg4",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-09-24T14:51:39Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDk1NjYwNDI0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-09-24T14:54:12Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDk1Njc2NTAx",
+      "author": {
+        "login": "KrisDavie"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2020-09-24T15:09:53Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDk1Njg3NTI1",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2020-09-24T15:21:17Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fc668cae15fca4e75b24ff4fcf12c23d2cf85224"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwMzc2NDU3",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T13:58:57Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "1445bd3ceda18db3b2630b989a37adfffbdd5078"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwMzc2NjEz",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T13:59:06Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "1445bd3ceda18db3b2630b989a37adfffbdd5078"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwNDMyNzk5",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T14:52:59Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "63b0d3697d50ac676fce659e6ff73626bd04735d"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwNDMzODgx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T14:54:00Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "63b0d3697d50ac676fce659e6ff73626bd04735d"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwNDM0MDYy",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T14:54:11Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "63b0d3697d50ac676fce659e6ff73626bd04735d"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwNDM0MTk5",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T14:54:19Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "63b0d3697d50ac676fce659e6ff73626bd04735d"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwNDQyNzE4",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T15:02:39Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "9bb527e2ef9ae2601d09d77d6cffc617f462d80b"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwNDQ2NTA1",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-01T15:06:22Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "9bb527e2ef9ae2601d09d77d6cffc617f462d80b"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwOTk0ODQ5",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-02T09:39:13Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "3ffa92a17a45aa1ea6d2f0af1bb274962745cb29"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAwOTk1NjAx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-02T09:40:30Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "3ffa92a17a45aa1ea6d2f0af1bb274962745cb29"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAxMDMwOTA1",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-02T10:40:20Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "7f298d5cccb27d00aea4ed87d9a4b35077a0b16a"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAxMDYzNDAx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-02T11:41:29Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "93d5ef79cc3e068b98cb9d7b7dbf3ce24306c4dc"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAxMDY5MzMx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-02T11:52:09Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "9084c70cec3b6e50557ff20e2e905eaa5c9289e3"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAxMDcxNDI0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-02T11:55:54Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "9084c70cec3b6e50557ff20e2e905eaa5c9289e3"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTAxMTYzMTIz",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2020-10-02T14:02:30Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "9084c70cec3b6e50557ff20e2e905eaa5c9289e3"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTE1NTM0MzU1",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-23T10:20:00Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "463e6788a8ab6565ccad3259a384395ef498f744"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTE1NTM1MjEx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-10-23T10:21:18Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "463e6788a8ab6565ccad3259a384395ef498f744"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMTg3MDcz",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T09:37:08Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "5d06844a35af958a0a87d87b48b0239498ea075f"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMTk0NDE0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T09:46:14Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "93b7472d4a1934153360c415eb9738d4316b6ef6"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMjA5OTUw",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T10:04:20Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fb249598d3c99a9b8122f4a2e4cccf13a4db5a9d"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMjEwMjI1",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T10:04:43Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "fb249598d3c99a9b8122f4a2e4cccf13a4db5a9d"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMjM1MzEx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T10:36:09Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "c5513f98eb43f4695c591ecfd7a0d3363c95f015"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMjU3NzIz",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T11:04:53Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "c5513f98eb43f4695c591ecfd7a0d3363c95f015"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTIzMjYzMzUx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2020-11-04T11:12:51Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "c5513f98eb43f4695c591ecfd7a0d3363c95f015"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTMxMjA1MDE0",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "In general, nice cleanup and refactoring! I noticed a few bugs across the app tough:\r\n\r\n- [x] Running the app using Node `v10.22.1` fails with a huge stack trace. I was able to run it using `v11.15.1`. So I suggest we use `.nvmrc` file to properly state which Node version this app requires.\r\n- [x] The markers table should not be displayed (actually not exist) when querying for `All Clusters` in the `Gene` page.\r\n![image](https://user-images.githubusercontent.com/16015936/103792400-e205e480-5043-11eb-9586-714691ff627f.png)\r\n- [x] When switching from loom, the viewer is not reloaded with the embedding\r\n- [x] After having switched from loom, colors are not properly assigned to dots anymore:\r\n  - To reproduce:\r\n    1. Load one loom, search for `All Clusters`\r\n    2. Load other loom, clear search box and search for `All Clusters`\r\n- [x] When switching from embeddings/coordinates, the scatterplot is not updated.\r\n- [x] All annotations page is empty/blank while loom contains community annotations\r\n- [x] Some viewers are missing in the compare tab. When switching to the `Compare` tab only 2 are shown.\r\n- [ ] Compare tab break when performing a DnD of one of the annotation onto a viewer.\r\n\r\n",
+      "submittedAt": "2021-01-06T16:33:16Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "CHANGES_REQUESTED",
+      "commit": {
+        "oid": "e9e249ca22eda56866b01b030c3376c570bc844b"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTY0MTY1MTMy",
+      "author": {
+        "login": "KrisDavie"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "Overall nice changes and restructuring. As discussed, the remaining issues can be dealt with in `develop` in order to get this merged after the main bits above are resolved.",
+      "submittedAt": "2021-01-14T16:21:01Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "CHANGES_REQUESTED",
+      "commit": {
+        "oid": "2c33076639c1afa900181a2cbfa92990f9f3c267"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTg0MTU1MDE0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-02-05T09:21:20Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "2c33076639c1afa900181a2cbfa92990f9f3c267"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MDcyMDc1",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:18:36Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "1f93c7b2253956cbe49a8884b19653a290d715d4"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MDg4NDc5",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:36:26Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "e8c5c53abf82dfbc81001c6e2cf15b794aa8b8b0"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MDkxNDEz",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:39:39Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "e8c5c53abf82dfbc81001c6e2cf15b794aa8b8b0"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MDkxNzA1",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:39:57Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "e8c5c53abf82dfbc81001c6e2cf15b794aa8b8b0"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MDk3OTI0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:46:34Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "e8c5c53abf82dfbc81001c6e2cf15b794aa8b8b0"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MTAyODQ0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:51:50Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "e8c5c53abf82dfbc81001c6e2cf15b794aa8b8b0"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MTA1Njkx",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:55:01Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "e8c5c53abf82dfbc81001c6e2cf15b794aa8b8b0"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MTA3NzE0",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T09:57:18Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "b44b3e86f8fb6fa95ae2db7dd55271075e4a1dfc"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MTEzMjA2",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T10:03:30Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "b44b3e86f8fb6fa95ae2db7dd55271075e4a1dfc"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI1MTE1MDA2",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-03-31T10:05:36Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "b44b3e86f8fb6fa95ae2db7dd55271075e4a1dfc"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI2OTE0MjAy",
+      "author": {
+        "login": "MaybeJustJames"
+      },
+      "authorAssociation": "COLLABORATOR",
+      "body": "",
+      "submittedAt": "2021-04-02T10:33:11Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "7afe7e41c93bedaa8b81949ff75341e14fa641da"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjI2OTcxNDkw",
+      "author": {
+        "login": "KrisDavie"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2021-04-02T13:05:21Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "COMMENTED",
+      "commit": {
+        "oid": "7afe7e41c93bedaa8b81949ff75341e14fa641da"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjY4NzEyOTI3",
+      "author": {
+        "login": "dweemx"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2021-05-28T07:24:50Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "APPROVED",
+      "commit": {
+        "oid": "aad17cb2ce846e49895c1655d36d9af1d5c9c254"
+      }
+    },
+    {
+      "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjcxMDE1NjUw",
+      "author": {
+        "login": "KrisDavie"
+      },
+      "authorAssociation": "CONTRIBUTOR",
+      "body": "",
+      "submittedAt": "2021-05-28T07:37:17Z",
+      "includesCreatedEdit": false,
+      "reactionGroups": [],
+      "state": "APPROVED",
+      "commit": {
+        "oid": "aad17cb2ce846e49895c1655d36d9af1d5c9c254"
+      }
+    }
+  ],
+  "state": "MERGED",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2021-05-28T08:22:21Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/aertslab/SCope/actions/runs/884919804/jobs/887085154",
+      "name": "client-quality-checks",
+      "startedAt": "2021-05-28T08:21:26Z",
+      "status": "COMPLETED",
+      "workflowName": "Client CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2021-05-28T08:23:06Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/aertslab/SCope/actions/runs/884919803/jobs/887085234",
+      "name": "quality-checks (3.7)",
+      "startedAt": "2021-05-28T08:20:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Server CI"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2021-05-28T08:22:52Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/aertslab/SCope/actions/runs/884919803/jobs/887085272",
+      "name": "quality-checks (3.8)",
+      "startedAt": "2021-05-28T08:20:22Z",
+      "status": "COMPLETED",
+      "workflowName": "Server CI"
+    }
+  ],
+  "title": "Initial front-end restructure and code re-design",
+  "updatedAt": "2021-06-24T14:41:45Z",
+  "url": "https://github.com/aertslab/SCope/pull/381"
+}

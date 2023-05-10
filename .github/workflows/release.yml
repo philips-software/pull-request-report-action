@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    environment: ReleaseAction
+    steps:
+      - name: Checkout sources in container
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab #v3.5.2
+        with:
+          fetch-depth: 0 # get the tags to figure out new version tag
+
+      - name: Automatic version
+        id: versioning
+        uses: PaulHatch/semantic-version@61243c92212f7939f340bd2f8072bee529ac77df #v5.0.3
+        with:
+          tag_prefix: "v"
+          # only changes for yaml files will create a tag and release
+          change_path: "dist/*"
+
+      - if: ${{ steps.versioning.outputs.changed == 'true'}}
+        name: Create tag
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 #v6.4.1
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ steps.versioning.outputs.version_tag }}',
+              sha: context.sha
+            })
+      - if: ${{ steps.versioning.outputs.changed == 'true'}}
+        name: Release artifacts
+        uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e #v1.12.0
+        with:
+          artifacts: "dist/*.tar.gz,dist/*.zip"
+          tag: ${{ steps.versioning.outputs.version_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}

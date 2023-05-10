@@ -1,0 +1,70 @@
+name: pull-request-report-action
+description: This action creates a report for a pull request on close
+inputs:
+  ShowAdditions:
+    description: Number of added lines
+    default: 'yes'
+    required: false
+  ShowDeleted:
+    description: Number of deleted lines
+    default: 'yes'
+    required: false
+  ShowNumberOfChangedFiles:
+    description: Number of changed files
+    default: 'yes'
+    required: false
+  ShowNumberOfCommits:
+    description: Number of commits
+    default: 'yes'
+    required: false
+  ShowNumberOfReviews:
+    description: Number of reviews
+    default: 'yes'
+    required: false
+  ShowNumberOfComments:
+    description: Number of comments (w/o review comments)
+    default: 'yes'
+    required: false
+  ShowNumberOfCommentOnlyReviews:
+    description: Number of reviews that contains a comment to resolve
+    default: 'yes'
+    required: false
+  ShowNumberOfRequestedChangeReviews:
+    description: Number of reviews that requested a change from the author
+    default: 'yes'
+    required: false
+  ShowNumberOfApprovedReviews:
+    description: Number of reviews that approved the Pull Request
+    default: 'yes'
+    required: false
+  ShowTotalNumberOfParticipants:
+    description: Get the total number of participants of a Pull Request
+    default: 'yes'
+    required: false
+  ShowTimeTotalRuntimeForLastStatusCheckRun:
+    description: Total runtime for last status check run (Workflow for PR)
+    default: 'yes'
+    required: false
+  ShowTimeSpendOnPrForLastStatusCheckRun:
+    description: Total time spend in last status check run on PR
+    default: 'yes'
+    required: false
+  ShowPRLeadTime:
+    description: PR lead time (from creation to close of PR)
+    default: 'yes'
+    required: false
+  ShowTimeSpendOnBranchBeforePrCreated:
+    description: Time that was spend on the branch before the PR was created
+    default: 'yes'
+    required: false
+  ShowTimeSpendOnBranchBeforePrMerged:
+    description: Time that was spend on the branch before the PR was merged
+    default: 'yes'
+    required: false
+  ShowTimeToMergeAfterLastReview:
+    description: Time to merge after last review
+    default: 'yes'
+    required: false
+runs:
+  using: node16
+  main: dist/index.js

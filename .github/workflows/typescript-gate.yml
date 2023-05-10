@@ -1,0 +1,40 @@
+name: typescript-gate
+
+on:
+  pull_request:
+    paths:
+      - src/**
+      - tests/**
+      - '*.json'
+      - action.yml
+      - .github/workflows/typescript-gate.yml
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - tests/**
+      - '*.json'
+      - action.yml
+      - .github/workflows/typescript-gate.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c # v3.6.0
+        with:
+          node-version: 16
+          cache: yarn
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: yarn
+      - run: yarn build
+      - run: yarn test
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # GH cli call needs the token
+      - run: yarn format-check
+      - run: yarn lint
+      - run: yarn package
