@@ -65,6 +65,9 @@ inputs:
     description: Time to merge after last review
     default: 'yes'
     required: false
+outputs:
+  json-report-path:
+    description: Path to the json report
 runs:
   using: node16
   main: dist/index.js
