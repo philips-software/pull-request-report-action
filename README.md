@@ -32,9 +32,13 @@ jobs:
     name: Generate report and add it as comment to the PR
     steps:
       - name: Checkout
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        uses: actions/checkout@main
       - name: Generate PR report
-        uses: philips-software/pull-request-report-action@0a3a47218c024410a5df2bc360e7367bee13b0a8 # v0.1.0
+        # the prefered way to use this action is to pin it to a specific commit
+        # and use dependabot to keep it up to date
+        # example:
+        # uses: philips-software/pull-request-report-action@da0318eea0069afcfb89f0a077c79c1d97e35e32 # v0.0.2
+        uses: philips-software/pull-request-report-action@main
         with:
           ShowNumberOfChangedFiles: 'no'
           ShowTimeToMergeAfterLastReview: 'no'
