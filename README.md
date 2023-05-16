@@ -26,19 +26,22 @@ on:
     # only run when PR is closed
     types: [closed]
 
+# token needs some additional permissions to be able to add a comment to the PR
+# and read all PR data
+permissions:
+  checks: read
+  pull-requests: write
+  repository-projects: read
+
 jobs:
   add-pr-report-as-comment:
     runs-on: ubuntu-latest
     name: Generate report and add it as comment to the PR
     steps:
       - name: Checkout
-        uses: actions/checkout@main
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - name: Generate PR report
-        # the prefered way to use this action is to pin it to a specific commit
-        # and use dependabot to keep it up to date
-        # example:
-        # uses: philips-software/pull-request-report-action@da0318eea0069afcfb89f0a077c79c1d97e35e32 # v0.0.2
-        uses: philips-software/pull-request-report-action@main
+        uses: philips-software/pull-request-report-action@da0318eea0069afcfb89f0a077c79c1d97e35e32 # v0.0.2
         with:
           ShowNumberOfChangedFiles: 'no'
           ShowTimeToMergeAfterLastReview: 'no'
