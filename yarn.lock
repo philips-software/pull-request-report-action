@@ -1184,20 +1184,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:5.59.7":
-  version: 5.59.7
-  resolution: "@typescript-eslint/parser@npm:5.59.7"
+"@typescript-eslint/parser@npm:5.59.9":
+  version: 5.59.9
+  resolution: "@typescript-eslint/parser@npm:5.59.9"
   dependencies:
-    "@typescript-eslint/scope-manager": 5.59.7
-    "@typescript-eslint/types": 5.59.7
-    "@typescript-eslint/typescript-estree": 5.59.7
+    "@typescript-eslint/scope-manager": 5.59.9
+    "@typescript-eslint/types": 5.59.9
+    "@typescript-eslint/typescript-estree": 5.59.9
     debug: ^4.3.4
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: bc44f37a11a44f84ae5f0156213f3e2e49aef2ecac94d9e161a0c721acd29462e288f306ad4648095ac1c0e5a5f62b78280c1735883cf39f79ee3afcba312119
+  checksum: 69b07d0a5bc6e1d24d23916c057ea9f2f53a0e7fb6dabadff92987c299640edee2c013fb93269322c7124e87b5c515529001397eae33006dfb40e1dcdf1902d7
   languageName: node
   linkType: hard
 
@@ -1208,16 +1208,6 @@ __metadata:
     "@typescript-eslint/types": 5.59.2
     "@typescript-eslint/visitor-keys": 5.59.2
   checksum: e7adce27890ebaadd0fb36a35639c9a97d2965973643aef4b4b0dcfabb03181c82235d7171e718b002dd398e52fefd67816eb34912ddbc2bb738b47755bd502a
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/scope-manager@npm:5.59.7":
-  version: 5.59.7
-  resolution: "@typescript-eslint/scope-manager@npm:5.59.7"
-  dependencies:
-    "@typescript-eslint/types": 5.59.7
-    "@typescript-eslint/visitor-keys": 5.59.7
-  checksum: 43f7ea93fddbe2902122a41050677fe3eff2ea468f435b981592510cfc6136e8c28ac7d3a3e05fb332c0b3078a29bd0c91c35b2b1f4e788b4eb9aaeb70e21583
   languageName: node
   linkType: hard
 
@@ -1255,13 +1245,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:5.59.7":
-  version: 5.59.7
-  resolution: "@typescript-eslint/types@npm:5.59.7"
-  checksum: 52eccec9e2d631eb2808e48b5dc33a837b5e242fa9eddace89fc707c9f2283b5364f1d38b33d418a08d64f45f6c22f051800898e1881a912f8aac0c3ae300d0a
-  languageName: node
-  linkType: hard
-
 "@typescript-eslint/types@npm:5.59.9":
   version: 5.59.9
   resolution: "@typescript-eslint/types@npm:5.59.9"
@@ -1284,24 +1267,6 @@ __metadata:
     typescript:
       optional: true
   checksum: e8bb8817fe53f826f54e4ca584e48a6700dae25e0cc20ab7db38e7e5308987c5759408b39a4e494d4d6dcd7b4bca9f9c507fae987213380dc1c98607cb0a60b1
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/typescript-estree@npm:5.59.7":
-  version: 5.59.7
-  resolution: "@typescript-eslint/typescript-estree@npm:5.59.7"
-  dependencies:
-    "@typescript-eslint/types": 5.59.7
-    "@typescript-eslint/visitor-keys": 5.59.7
-    debug: ^4.3.4
-    globby: ^11.1.0
-    is-glob: ^4.0.3
-    semver: ^7.3.7
-    tsutils: ^3.21.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: eefe82eedf9ee2e14463c3f2b5b18df084c1328a859b245ee897a9a7075acce7cca0216a21fd7968b75aa64189daa008bfde1e2f9afbcc336f3dfe856e7f342e
   languageName: node
   linkType: hard
 
@@ -1366,16 +1331,6 @@ __metadata:
     "@typescript-eslint/types": 5.59.2
     eslint-visitor-keys: ^3.3.0
   checksum: 3057a017bca03b4ec3bee442044f2bc2f77a4af0d83ea9bf7c6cb2a12811126d93d9d300d89ef8078d981e478c6cc38693c51a2ae4b10a717796bba880eff924
-  languageName: node
-  linkType: hard
-
-"@typescript-eslint/visitor-keys@npm:5.59.7":
-  version: 5.59.7
-  resolution: "@typescript-eslint/visitor-keys@npm:5.59.7"
-  dependencies:
-    "@typescript-eslint/types": 5.59.7
-    eslint-visitor-keys: ^3.3.0
-  checksum: 4367f2ea68dd96a0520485434ad11e1bd26239eeeb3a2150bee7478a0f1df3c2099a39f96486722932be0456bcb7a47a483b452876d1d30bdeb9b81d354eef3d
   languageName: node
   linkType: hard
 
@@ -4172,7 +4127,7 @@ __metadata:
     "@types/js-yaml": ^4.0.5
     "@types/node": 20.2.5
     "@typescript-eslint/eslint-plugin": 5.59.9
-    "@typescript-eslint/parser": 5.59.7
+    "@typescript-eslint/parser": 5.59.9
     "@vercel/ncc": 0.36.1
     eslint: 8.41.0
     eslint-plugin-jest: 27.2.1
