@@ -28,10 +28,13 @@ on:
 
 # token needs some additional permissions to be able to add a comment to the PR
 # and read all PR data
+# permissions can vaary depending on the metrics you want to use and org settings
 permissions:
+  contents: read
   checks: read
   pull-requests: write
   repository-projects: read
+  actions: read
 
 jobs:
   add-pr-report-as-comment:
