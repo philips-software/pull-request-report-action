@@ -1,4 +1,14 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm test
+# run the unit tests with yarn to ensure that generated files are up to date
+yarn test
+
+# create the yarn package to have the lastest files in dist folder
+yarn package
+
+# check if the files in /dist/ are modified and if so, let the user know that he needs to commit or revert them
+if git diff --cached --name-only | grep -q "^dist/"; then
+  echo "You have modified files in the dist folder. Please commit or revert them before commiting."
+  exit 1
+fi
