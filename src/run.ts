@@ -51,9 +51,9 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
   const commentPath = CreatePRCommentFile(cliPullRequestData, reportAsString)
   await AddCommentToPR(commentPath, pullRequestDataModel.id)
 
-  const jsonPath = commentPath.replace(`/\\.md$/`, '.json')
+  const jsonPath = commentPath.replace(/\.md$/, '.json')
   fs.writeFileSync(jsonPath, JSON.stringify(cliPullRequestData))
-  core.setOutput('json-report-path', jsonPath)
+  core.setOutput('json_report_path', jsonPath)
 
   return 0
 }

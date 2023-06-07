@@ -1,5 +1,5 @@
 {
-  "main": "dist/index.js",
+  "main": "lib/src/main.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
