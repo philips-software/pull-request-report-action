@@ -531,7 +531,7 @@ var MeasureCategory;
     MeasureCategory[MeasureCategory["StaticMeasures"] = 1] = "StaticMeasures";
     MeasureCategory[MeasureCategory["TimeRelatedMeasures"] = 2] = "TimeRelatedMeasures";
     MeasureCategory[MeasureCategory["StatusCheckRelated"] = 3] = "StatusCheckRelated";
-})(MeasureCategory = exports.MeasureCategory || (exports.MeasureCategory = {}));
+})(MeasureCategory || (exports.MeasureCategory = MeasureCategory = {}));
 exports.MeasureCategoryTitleMap = new Map([
     [MeasureCategory.None, 'None'],
     [MeasureCategory.StaticMeasures, 'Static measures'],
