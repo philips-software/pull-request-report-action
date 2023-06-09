@@ -5,6 +5,7 @@
 - Reading and generate some basic PR measures from every merged PR
 - Provide these measures as a comment on the merged PR
 - Provide the raw measures as a hidden JSON data in comment
+- Get a path to a json file with the raw data for further processing
 
 More features are planned for the future. If you have any suggestions, please
 open an issue or create a PR.
@@ -28,7 +29,7 @@ on:
 
 # token needs some additional permissions to be able to add a comment to the PR
 # and read all PR data
-# permissions can vaary depending on the metrics you want to use and org settings
+# permissions can vary depending on the metrics you want to use and org settings
 permissions:
   contents: read
   checks: read
@@ -44,12 +45,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - name: Generate PR report
+        id: generate_report
         uses: philips-software/pull-request-report-action@da0318eea0069afcfb89f0a077c79c1d97e35e32 # v0.0.2
         with:
           ShowNumberOfChangedFiles: 'no'
           ShowTimeToMergeAfterLastReview: 'no'
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      # Instead of printing the path to the console you can upload the file
+      # with curl to a central service to collect all the data for further
+      # processing
+      - name: Print path of raw data json file
+        run: echo "Report path: ${{ steps.generate_report.outputs.json_report_path }}"
 ```
 
 **Note**
@@ -70,3 +77,10 @@ With more features, the configuration options will also increase.
 
 The overview of all metrics and their default values can be found in the
 [metrics documentation](./config.md).
+
+Besides the configuration settings the action also returns an output value as
+you can see in the [`action.yml`](./action.yml). The name of the variable is 
+`json_report_path` and contains the path to the file with the raw data of the
+pull request. This can be especially useful if the data is to be stored or
+analyzed centrally. 
+
