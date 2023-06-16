@@ -1,0 +1,29 @@
+name: Add Pull Request Report to PR when closed
+
+on:
+  pull_request:
+    # only run when PR is closed
+    types: [closed]
+
+# token needs some additional permissions to be able to add a comment to the PR
+# and read all PR data
+# permissions can vary depending on the metrics you want to use and org settings
+permissions:
+  contents: read
+  checks: read
+  pull-requests: write
+  repository-projects: read
+  actions: read
+
+jobs:
+  add-pr-report-as-comment:
+    runs-on: ubuntu-latest
+    name: Generate report and add it as comment to the PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - name: Generate PR report
+        id: generate_report
+        uses: philips-software/pull-request-report-action@main
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
