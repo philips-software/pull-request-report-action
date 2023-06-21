@@ -1,5 +1,8 @@
 name: pull-request-report-action
 description: This action creates a report for a pull request on close
+branding:
+  icon: git-pull-request
+  color: blue
 inputs:
   IncludeRawDataAsMarkdownComment:
     description: Add raw PR data as markdown comment in the PR Report (of the PR)
