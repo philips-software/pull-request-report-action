@@ -3,6 +3,9 @@
 import * as core from '@actions/core'
 
 export const config = {
+  IncludeRawDataAsMarkdownComment: core.getInput('IncludeRawDataAsMarkdownComment', { required: false }),
+  AddPrReportAsComment: core.getInput('AddPrReportAsComment', { required: false }),
+  ReportTitle: core.getInput('ReportTitle', { required: false }),
   ShowAdditions: core.getInput('ShowAdditions', { required: false }),
   ShowDeleted: core.getInput('ShowDeleted', { required: false }),
   ShowNumberOfChangedFiles: core.getInput('ShowNumberOfChangedFiles', { required: false }),

@@ -1,9 +1,9 @@
 // for license and copyright look at the repository
 
 import { IPullRequest } from './Interfaces/PullRequestTypes'
-import { IReport } from './Interfaces/ReportTypes'
+import { IReport, IReportConfigurationEntry } from './Interfaces/ReportTypes'
 import { tsMarkdown, table, TableEntry, H1Entry, H3Entry, MarkdownEntry } from 'ts-markdown'
-import { MeasureCategory, MeasureCategoryTitleMap } from './Report.Definitions'
+import { ConfigurationCategory, ConfigurationCategoryTitleMap } from './Report.Definitions'
 
 export class ReportGenerator {
   DescriptionHeaderLabel = 'Description'
@@ -21,9 +21,18 @@ export class ReportGenerator {
     return title
   }
 
+  public GetMeasurementEntries(entries: IReportConfigurationEntry[]): IReportConfigurationEntry[] {
+    if (entries !== undefined && entries !== null && entries.length > 0) {
+      return entries.filter((entry) => ConfigurationCategory[entry.Info.ConfigurationCategory].endsWith('Measures'))
+    }
+
+    return []
+  }
+
   public GenerateMeasureTable(pr: IPullRequest, report: IReport): MarkdownEntry[] {
     const tables: MarkdownEntry[] = []
-    const categories = new Set(report.Entries.map((entry) => entry.Info.MeasureCategory))
+    const entries = this.GetMeasurementEntries(report.Entries)
+    const categories = new Set(entries.map((entry) => entry.Info.ConfigurationCategory))
     categories.forEach((category) => {
       tables.push(this.GenerateCategoryTitle(category))
       tables.push(this.GenerateCategoryTable(pr, report, category))
@@ -32,15 +41,16 @@ export class ReportGenerator {
     return tables
   }
 
-  private GenerateCategoryTitle(measureCategory: MeasureCategory): H3Entry {
-    const title = { h3: `${MeasureCategoryTitleMap.get(measureCategory) || 'No category'}` }
+  private GenerateCategoryTitle(measureCategory: ConfigurationCategory): H3Entry {
+    const title = { h3: `${ConfigurationCategoryTitleMap.get(measureCategory) || 'No category'}` }
     return title
   }
 
-  private GenerateCategoryTable(pr: IPullRequest, report: IReport, measureCategory: MeasureCategory): TableEntry {
-    const categoryEntries = report.Entries.filter((entry) => entry.Info.MeasureCategory === measureCategory)
+  private GenerateCategoryTable(pr: IPullRequest, report: IReport, measureCategory: ConfigurationCategory): TableEntry {
+    const entries = this.GetMeasurementEntries(report.Entries)
+    const categoryEntries = entries.filter((entry) => entry.Info.ConfigurationCategory === measureCategory)
     categoryEntries.forEach((entry) => {
-      entry.Info.Value = entry.ReportMeasureCallback(pr)
+      entry.Info.Value = entry.PullRequestCallback(pr)
     })
 
     const rows = categoryEntries.map((entry) => ({

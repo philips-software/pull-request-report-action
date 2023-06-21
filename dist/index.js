@@ -524,39 +524,41 @@ exports.GetTotalNumberOfParticipants = GetTotalNumberOfParticipants;
 
 // for license and copyright look at the repository
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Report = exports.ReportMeasurementEntry = exports.MeasurementInfo = exports.MeasureCategoryTitleMap = exports.MeasureCategory = void 0;
-var MeasureCategory;
-(function (MeasureCategory) {
-    MeasureCategory[MeasureCategory["None"] = 0] = "None";
-    MeasureCategory[MeasureCategory["StaticMeasures"] = 1] = "StaticMeasures";
-    MeasureCategory[MeasureCategory["TimeRelatedMeasures"] = 2] = "TimeRelatedMeasures";
-    MeasureCategory[MeasureCategory["StatusCheckRelated"] = 3] = "StatusCheckRelated";
-})(MeasureCategory || (exports.MeasureCategory = MeasureCategory = {}));
-exports.MeasureCategoryTitleMap = new Map([
-    [MeasureCategory.None, 'None'],
-    [MeasureCategory.StaticMeasures, 'Static measures'],
-    [MeasureCategory.TimeRelatedMeasures, 'Time related measures'],
-    [MeasureCategory.StatusCheckRelated, 'Status check related measures'],
+exports.Report = exports.ReportConfigurationEntry = exports.ConfigurationInfo = exports.ConfigurationCategoryTitleMap = exports.ConfigurationCategory = void 0;
+var ConfigurationCategory;
+(function (ConfigurationCategory) {
+    ConfigurationCategory[ConfigurationCategory["None"] = 0] = "None";
+    ConfigurationCategory[ConfigurationCategory["StaticMeasures"] = 1] = "StaticMeasures";
+    ConfigurationCategory[ConfigurationCategory["TimeRelatedMeasures"] = 2] = "TimeRelatedMeasures";
+    ConfigurationCategory[ConfigurationCategory["StatusCheckRelatedMeasures"] = 3] = "StatusCheckRelatedMeasures";
+    ConfigurationCategory[ConfigurationCategory["ReportGeneratorValue"] = 4] = "ReportGeneratorValue";
+})(ConfigurationCategory || (exports.ConfigurationCategory = ConfigurationCategory = {}));
+exports.ConfigurationCategoryTitleMap = new Map([
+    [ConfigurationCategory.None, 'None'],
+    [ConfigurationCategory.StaticMeasures, 'Static measures'],
+    [ConfigurationCategory.TimeRelatedMeasures, 'Time related measures'],
+    [ConfigurationCategory.StatusCheckRelatedMeasures, 'Status check related measures'],
+    [ConfigurationCategory.ReportGeneratorValue, 'Report generator related predefined strings'],
 ]);
-class MeasurementInfo {
-    constructor(label, presentationValue, value, configName, defaultConfigValue, measureCategory) {
+class ConfigurationInfo {
+    constructor(label, presentationValue, value, configName, defaultConfigValue, configurationCategory) {
         this.Description = label;
         this.PresentationValue = presentationValue;
         this.Value = value;
         this.ConfigurationName = configName;
         this.ConfigValue = defaultConfigValue;
-        this.MeasureCategory = measureCategory;
+        this.ConfigurationCategory = configurationCategory;
     }
 }
-exports.MeasurementInfo = MeasurementInfo;
-class ReportMeasurementEntry {
+exports.ConfigurationInfo = ConfigurationInfo;
+class ReportConfigurationEntry {
     constructor(id = '', info, measureCallback = () => '') {
         this.Id = id;
         this.Info = info;
-        this.ReportMeasureCallback = measureCallback;
+        this.PullRequestCallback = measureCallback;
     }
 }
-exports.ReportMeasurementEntry = ReportMeasurementEntry;
+exports.ReportConfigurationEntry = ReportConfigurationEntry;
 class Report {
     constructor() {
         this.Id = '';
@@ -630,9 +632,16 @@ class ReportGenerator {
         const title = { h1: `${report.Description} (#${pr.id})` };
         return title;
     }
+    GetMeasurementEntries(entries) {
+        if (entries !== undefined && entries !== null && entries.length > 0) {
+            return entries.filter((entry) => Report_Definitions_1.ConfigurationCategory[entry.Info.ConfigurationCategory].endsWith("Measures"));
+        }
+        return [];
+    }
     GenerateMeasureTable(pr, report) {
         const tables = [];
-        const categories = new Set(report.Entries.map((entry) => entry.Info.MeasureCategory));
+        const entries = this.GetMeasurementEntries(report.Entries);
+        const categories = new Set(entries.map((entry) => entry.Info.ConfigurationCategory));
         categories.forEach((category) => {
             tables.push(this.GenerateCategoryTitle(category));
             tables.push(this.GenerateCategoryTable(pr, report, category));
@@ -640,13 +649,14 @@ class ReportGenerator {
         return tables;
     }
     GenerateCategoryTitle(measureCategory) {
-        const title = { h3: `${Report_Definitions_1.MeasureCategoryTitleMap.get(measureCategory) || 'No category'}` };
+        const title = { h3: `${Report_Definitions_1.ConfigurationCategoryTitleMap.get(measureCategory) || 'No category'}` };
         return title;
     }
     GenerateCategoryTable(pr, report, measureCategory) {
-        const categoryEntries = report.Entries.filter((entry) => entry.Info.MeasureCategory === measureCategory);
+        const entries = this.GetMeasurementEntries(report.Entries);
+        const categoryEntries = entries.filter((entry) => entry.Info.ConfigurationCategory === measureCategory);
         categoryEntries.forEach((entry) => {
-            entry.Info.Value = entry.ReportMeasureCallback(pr);
+            entry.Info.Value = entry.PullRequestCallback(pr);
         });
         const rows = categoryEntries.map((entry) => ({
             Description: entry.Info.Description,
@@ -670,7 +680,7 @@ exports.ReportGenerator = ReportGenerator;
 
 // for license and copyright look at the repository
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.MetricTable = exports.GetActiveMeasures = exports.UpdateConfigValues = void 0;
+exports.ReportConfigurationTable = exports.GetActiveMeasures = exports.UpdateConfigValues = void 0;
 const Report_Calculation_1 = __nccwpck_require__(4725);
 const Report_Definitions_1 = __nccwpck_require__(7693);
 const Report_Functions_1 = __nccwpck_require__(7771);
@@ -687,23 +697,26 @@ const GetActiveMeasures = (entries) => {
     return entries.filter((entry) => entry.Info.ConfigValue === 'yes');
 };
 exports.GetActiveMeasures = GetActiveMeasures;
-exports.MetricTable = new Array();
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('additions', new Report_Definitions_1.MeasurementInfo('Number of added lines', 0, 0, 'ShowAdditions', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), Report_Functions_1.GetAddedLines));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('deleted', new Report_Definitions_1.MeasurementInfo('Number of deleted lines', 0, 0, 'ShowDeleted', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), Report_Functions_1.GetDeletedLines));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('changedFiles', new Report_Definitions_1.MeasurementInfo('Number of changed files', 0, 0, 'ShowNumberOfChangedFiles', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), Report_Functions_1.GetChangedFilesCount));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('commits', new Report_Definitions_1.MeasurementInfo('Number of commits', 0, 0, 'ShowNumberOfCommits', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), Report_Functions_1.GetCommitsCount));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('reviews', new Report_Definitions_1.MeasurementInfo('Number of reviews', 0, 0, 'ShowNumberOfReviews', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), Report_Functions_1.GetReviewCount));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('comments', new Report_Definitions_1.MeasurementInfo('Number of comments (w/o review comments)', 0, 0, 'ShowNumberOfComments', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), Report_Functions_1.GetCommentCount));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_lead_time', new Report_Definitions_1.MeasurementInfo('PR lead time (from creation to close of PR)', 0, 0, 'ShowPRLeadTime', 'yes', Report_Definitions_1.MeasureCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetLeadTimeForPullRequest)(pr))));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_time_branch_before_pr', new Report_Definitions_1.MeasurementInfo('Time that was spend on the branch before the PR was created', 0, 0, 'ShowTimeSpendOnBranchBeforePrCreated', 'yes', Report_Definitions_1.MeasureCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeSpendOnBranchBeforePRCreated)(pr))));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_time_branch_before_merge', new Report_Definitions_1.MeasurementInfo('Time that was spend on the branch before the PR was merged', 0, 0, 'ShowTimeSpendOnBranchBeforePrMerged', 'yes', Report_Definitions_1.MeasureCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeSpendOnBranchBeforePRMerged)(pr))));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_time_to_merge_after_last_review', new Report_Definitions_1.MeasurementInfo('Time to merge after last review', 0, 0, 'ShowTimeToMergeAfterLastReview', 'yes', Report_Definitions_1.MeasureCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeToMergeAfterLastReview)(pr))));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('no_of_comment_only_reviews', new Report_Definitions_1.MeasurementInfo('Number of reviews that contains a comment to resolve', 0, 0, 'ShowNumberOfCommentOnlyReviews', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetNumberOfCommentOnlyReviews)(pr)));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('no_of_change_requested_reviews', new Report_Definitions_1.MeasurementInfo('Number of reviews that requested a change from the author', 0, 0, 'ShowNumberOfRequestedChangeReviews', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetNumberOfRequestedChangeReviews)(pr)));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('no_of_approved_reviews', new Report_Definitions_1.MeasurementInfo('Number of reviews that approved the Pull Request', 0, 0, 'ShowNumberOfApprovedReviews', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetNumberOfApprovedReviews)(pr)));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_time_total_runtime_for_last_status_check_run', new Report_Definitions_1.MeasurementInfo('Total runtime for last status check run (Workflow for PR)', 0, 0, 'ShowTimeTotalRuntimeForLastStatusCheckRun', 'yes', Report_Definitions_1.MeasureCategory.StatusCheckRelated), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTotalRuntimeForLastStatusCheckRun)(pr))));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_time_spend_in_pr_for_last_status_check_run', new Report_Definitions_1.MeasurementInfo('Total time spend in last status check run on PR', 0, 0, 'ShowTimeSpendOnPrForLastStatusCheckRun', 'yes', Report_Definitions_1.MeasureCategory.StatusCheckRelated), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeSpendInPrForLastStatusCheckRun)(pr))));
-exports.MetricTable.push(new Report_Definitions_1.ReportMeasurementEntry('pr_total_number_of_participants', new Report_Definitions_1.MeasurementInfo('Get the total number of participants of a Pull Request', 0, 0, 'ShowTotalNumberOfParticipants', 'yes', Report_Definitions_1.MeasureCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetTotalNumberOfParticipants)(pr)));
+exports.ReportConfigurationTable = new Array();
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('include_raw_data_as_md_comment', new Report_Definitions_1.ConfigurationInfo('Add raw PR data as markdown comment in the PR Report (of the PR)', 0, 0, 'IncludeRawDataAsMarkdownComment', 'yes', Report_Definitions_1.ConfigurationCategory.ReportGeneratorValue), () => 0));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('create_report_comment', new Report_Definitions_1.ConfigurationInfo('Add PR report to the PR as comment', 0, 0, 'AddPrReportAsComment', 'yes', Report_Definitions_1.ConfigurationCategory.ReportGeneratorValue), () => 0));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('title_string', new Report_Definitions_1.ConfigurationInfo('Pull Request Report', 0, 0, 'ReportTitle', 'Pull Request Report', Report_Definitions_1.ConfigurationCategory.ReportGeneratorValue), () => 0));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('additions', new Report_Definitions_1.ConfigurationInfo('Number of added lines', 0, 0, 'ShowAdditions', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), Report_Functions_1.GetAddedLines));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('deleted', new Report_Definitions_1.ConfigurationInfo('Number of deleted lines', 0, 0, 'ShowDeleted', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), Report_Functions_1.GetDeletedLines));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('changedFiles', new Report_Definitions_1.ConfigurationInfo('Number of changed files', 0, 0, 'ShowNumberOfChangedFiles', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), Report_Functions_1.GetChangedFilesCount));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('commits', new Report_Definitions_1.ConfigurationInfo('Number of commits', 0, 0, 'ShowNumberOfCommits', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), Report_Functions_1.GetCommitsCount));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('reviews', new Report_Definitions_1.ConfigurationInfo('Number of reviews', 0, 0, 'ShowNumberOfReviews', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), Report_Functions_1.GetReviewCount));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('comments', new Report_Definitions_1.ConfigurationInfo('Number of comments (w/o review comments)', 0, 0, 'ShowNumberOfComments', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), Report_Functions_1.GetCommentCount));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_lead_time', new Report_Definitions_1.ConfigurationInfo('PR lead time (from creation to close of PR)', 0, 0, 'ShowPRLeadTime', 'yes', Report_Definitions_1.ConfigurationCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetLeadTimeForPullRequest)(pr))));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_time_branch_before_pr', new Report_Definitions_1.ConfigurationInfo('Time that was spend on the branch before the PR was created', 0, 0, 'ShowTimeSpendOnBranchBeforePrCreated', 'yes', Report_Definitions_1.ConfigurationCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeSpendOnBranchBeforePRCreated)(pr))));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_time_branch_before_merge', new Report_Definitions_1.ConfigurationInfo('Time that was spend on the branch before the PR was merged', 0, 0, 'ShowTimeSpendOnBranchBeforePrMerged', 'yes', Report_Definitions_1.ConfigurationCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeSpendOnBranchBeforePRMerged)(pr))));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_time_to_merge_after_last_review', new Report_Definitions_1.ConfigurationInfo('Time to merge after last review', 0, 0, 'ShowTimeToMergeAfterLastReview', 'yes', Report_Definitions_1.ConfigurationCategory.TimeRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeToMergeAfterLastReview)(pr))));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('no_of_comment_only_reviews', new Report_Definitions_1.ConfigurationInfo('Number of reviews that contains a comment to resolve', 0, 0, 'ShowNumberOfCommentOnlyReviews', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetNumberOfCommentOnlyReviews)(pr)));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('no_of_change_requested_reviews', new Report_Definitions_1.ConfigurationInfo('Number of reviews that requested a change from the author', 0, 0, 'ShowNumberOfRequestedChangeReviews', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetNumberOfRequestedChangeReviews)(pr)));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('no_of_approved_reviews', new Report_Definitions_1.ConfigurationInfo('Number of reviews that approved the Pull Request', 0, 0, 'ShowNumberOfApprovedReviews', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetNumberOfApprovedReviews)(pr)));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_time_total_runtime_for_last_status_check_run', new Report_Definitions_1.ConfigurationInfo('Total runtime for last status check run (Workflow for PR)', 0, 0, 'ShowTimeTotalRuntimeForLastStatusCheckRun', 'yes', Report_Definitions_1.ConfigurationCategory.StatusCheckRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTotalRuntimeForLastStatusCheckRun)(pr))));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_time_spend_in_pr_for_last_status_check_run', new Report_Definitions_1.ConfigurationInfo('Total time spend in last status check run on PR', 0, 0, 'ShowTimeSpendOnPrForLastStatusCheckRun', 'yes', Report_Definitions_1.ConfigurationCategory.StatusCheckRelatedMeasures), (pr) => (0, Report_Calculation_1.MillisecondsToReadableDuration)((0, Report_Calculation_1.GetTimeSpendInPrForLastStatusCheckRun)(pr))));
+exports.ReportConfigurationTable.push(new Report_Definitions_1.ReportConfigurationEntry('pr_total_number_of_participants', new Report_Definitions_1.ConfigurationInfo('Get the total number of participants of a Pull Request', 0, 0, 'ShowTotalNumberOfParticipants', 'yes', Report_Definitions_1.ConfigurationCategory.StaticMeasures), (pr) => (0, Report_Calculation_1.GetTotalNumberOfParticipants)(pr)));
 
 
 /***/ }),
@@ -741,6 +754,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.config = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 exports.config = {
+    IncludeRawDataAsMarkdownComment: core.getInput('IncludeRawDataAsMarkdownComment', { required: false }),
+    AddPrReportAsComment: core.getInput('AddPrReportAsComment', { required: false }),
+    ReportTitle: core.getInput('ReportTitle', { required: false }),
     ShowAdditions: core.getInput('ShowAdditions', { required: false }),
     ShowDeleted: core.getInput('ShowDeleted', { required: false }),
     ShowNumberOfChangedFiles: core.getInput('ShowNumberOfChangedFiles', { required: false }),
@@ -840,10 +856,13 @@ const Report_Definitions_1 = __nccwpck_require__(7693);
 const Report_Measures_1 = __nccwpck_require__(1245);
 const PullRequest_Definitions_1 = __nccwpck_require__(2049);
 const fs = __importStar(__nccwpck_require__(7147));
-const CreatePRCommentFile = (prData, commentText) => {
+const CreatePRCommentFile = (prData, commentText, include_raw_data) => {
     // generate random file name
     const fileName = Math.random().toString(36).substring(7) + '.md';
-    const jsonString = JSON.stringify(prData);
+    let jsonString = '';
+    if (include_raw_data) {
+        jsonString = JSON.stringify(prData);
+    }
     // write report string to file
     fs.writeFileSync(fileName, `<!-- ${jsonString} -->\n${commentText}`);
     return `${process.env.GITHUB_WORKSPACE || './'}/${fileName}`;
@@ -855,14 +874,17 @@ const GenerateReport = (activeConfigValues, pullRequestDataModel) => {
     report.Id = pullRequestDataModel.id.toString();
     return report;
 };
+const IsConfigValueYes = (configValue) => {
+    return configValue.trim().toLowerCase() === 'yes';
+};
 const run = async (inputsFromWorkflow) => {
     // take care that action is running only in PR context
     if (process.env.GITHUB_EVENT_NAME !== 'pull_request') {
         core.setFailed('Action is running outside of PR context');
         return 0;
     }
-    (0, Report_Measures_1.UpdateConfigValues)(inputsFromWorkflow, Report_Measures_1.MetricTable);
-    const activeConfigValues = (0, Report_Measures_1.GetActiveMeasures)(Report_Measures_1.MetricTable);
+    (0, Report_Measures_1.UpdateConfigValues)(inputsFromWorkflow, Report_Measures_1.ReportConfigurationTable);
+    const activeConfigValues = (0, Report_Measures_1.GetActiveMeasures)(Report_Measures_1.ReportConfigurationTable);
     // get PR data from github cli
     const cliPullRequestData = await (0, GitHubCliHelper_1.GetPullRequestData)(github.context.issue.number);
     // transform PR data to a typed model
@@ -871,9 +893,12 @@ const run = async (inputsFromWorkflow) => {
     const generator = new Report_Generation_1.ReportGenerator();
     const report = GenerateReport(activeConfigValues, pullRequestDataModel);
     // create report
+    report.Description = inputsFromWorkflow.ReportTitle;
     const reportAsString = generator.Generate(pullRequestDataModel, report);
-    const commentPath = CreatePRCommentFile(cliPullRequestData, reportAsString);
-    await (0, GitHubCliHelper_1.AddCommentToPR)(commentPath, pullRequestDataModel.id);
+    const commentPath = CreatePRCommentFile(cliPullRequestData, reportAsString, IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment));
+    if (IsConfigValueYes(inputsFromWorkflow.AddPrReportAsComment)) {
+        await (0, GitHubCliHelper_1.AddCommentToPR)(commentPath, pullRequestDataModel.id);
+    }
     const jsonPath = commentPath.replace(/\.md$/, '.json');
     fs.writeFileSync(jsonPath, JSON.stringify(cliPullRequestData));
     core.setOutput('json_report_path', jsonPath);

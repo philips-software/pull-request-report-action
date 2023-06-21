@@ -2,30 +2,42 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import { AddCommentToPR, GetPullRequestData } from './GitHubCliHelper'
 import { ReportGenerator } from './Report.Generation'
-import { Report, ReportMeasurementEntry } from './Report.Definitions'
-import { GetActiveMeasures, MetricTable, UpdateConfigValues as UpdateConfig } from './Report.Measures'
+import { Report, ReportConfigurationEntry } from './Report.Definitions'
+import { GetActiveMeasures, ReportConfigurationTable, UpdateConfigValues as UpdateConfig } from './Report.Measures'
 import { PullRequest } from './PullRequest.Definitions'
 import * as fs from 'fs'
 import { ConfigurationInputs } from './action.config.type'
 import { IPullRequest } from './Interfaces/PullRequestTypes'
 import { IReport } from './Interfaces/ReportTypes'
 
-const CreatePRCommentFile = (prData: unknown, commentText: string): string => {
+const CreatePRCommentFile = (prData: unknown, commentText: string, include_raw_data: boolean): string => {
   // generate random file name
   const fileName = Math.random().toString(36).substring(7) + '.md'
-  const jsonString = JSON.stringify(prData)
+  let jsonString = ''
+
+  if (include_raw_data) {
+    jsonString = JSON.stringify(prData)
+  }
+
   // write report string to file
   fs.writeFileSync(fileName, `<!-- ${jsonString} -->\n${commentText}`)
 
   return `${process.env.GITHUB_WORKSPACE || './'}/${fileName}`
 }
 
-const GenerateReport = (activeConfigValues: ReportMeasurementEntry[], pullRequestDataModel: IPullRequest): IReport => {
+const GenerateReport = (
+  activeConfigValues: ReportConfigurationEntry[],
+  pullRequestDataModel: IPullRequest
+): IReport => {
   const report = new Report()
   report.Entries = activeConfigValues
   report.Description = 'Test report'
   report.Id = pullRequestDataModel.id.toString()
   return report
+}
+
+const IsConfigValueYes = (configValue: string): boolean => {
+  return configValue.trim().toLowerCase() === 'yes'
 }
 
 export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<number> => {
@@ -35,8 +47,8 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
     return 0
   }
 
-  UpdateConfig(inputsFromWorkflow, MetricTable)
-  const activeConfigValues = GetActiveMeasures(MetricTable)
+  UpdateConfig(inputsFromWorkflow, ReportConfigurationTable)
+  const activeConfigValues = GetActiveMeasures(ReportConfigurationTable)
 
   // get PR data from github cli
   const cliPullRequestData = await GetPullRequestData(github.context.issue.number)
@@ -46,10 +58,17 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
   const generator = new ReportGenerator()
   const report = GenerateReport(activeConfigValues, pullRequestDataModel)
   // create report
+  report.Description = inputsFromWorkflow.ReportTitle as string
   const reportAsString = generator.Generate(pullRequestDataModel, report)
 
-  const commentPath = CreatePRCommentFile(cliPullRequestData, reportAsString)
-  await AddCommentToPR(commentPath, pullRequestDataModel.id)
+  const commentPath = CreatePRCommentFile(
+    cliPullRequestData,
+    reportAsString,
+    IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment as string)
+  )
+  if (IsConfigValueYes(inputsFromWorkflow.AddPrReportAsComment as string)) {
+    await AddCommentToPR(commentPath, pullRequestDataModel.id)
+  }
 
   const jsonPath = commentPath.replace(/\.md$/, '.json')
   fs.writeFileSync(jsonPath, JSON.stringify(cliPullRequestData))
