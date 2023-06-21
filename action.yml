@@ -1,6 +1,18 @@
 name: pull-request-report-action
 description: This action creates a report for a pull request on close
 inputs:
+  IncludeRawDataAsMarkdownComment:
+    description: Add raw PR data as markdown comment in the PR Report (of the PR)
+    default: 'yes'
+    required: false
+  AddPrReportAsComment:
+    description: Add PR report to the PR as comment
+    default: 'yes'
+    required: false
+  ReportTitle:
+    description: Pull Request Report
+    default: Pull Request Report
+    required: false
   ShowAdditions:
     description: Number of added lines
     default: 'yes'

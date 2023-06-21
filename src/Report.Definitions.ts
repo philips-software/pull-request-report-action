@@ -1,28 +1,30 @@
 // for license and copyright look at the repository
 
-import { IReport, IReportMeasurementEntry, IReportMeasurementInfo, MeasureCallback } from './Interfaces/ReportTypes'
+import { IReport, IReportConfigurationEntry, IReportConfigInfo, PullRequestCallback } from './Interfaces/ReportTypes'
 
-export enum MeasureCategory {
+export enum ConfigurationCategory {
   None,
   StaticMeasures,
   TimeRelatedMeasures,
-  StatusCheckRelated,
+  StatusCheckRelatedMeasures,
+  ReportGeneratorValue,
 }
 
-export const MeasureCategoryTitleMap = new Map<MeasureCategory, string>([
-  [MeasureCategory.None, 'None'],
-  [MeasureCategory.StaticMeasures, 'Static measures'],
-  [MeasureCategory.TimeRelatedMeasures, 'Time related measures'],
-  [MeasureCategory.StatusCheckRelated, 'Status check related measures'],
+export const ConfigurationCategoryTitleMap = new Map<ConfigurationCategory, string>([
+  [ConfigurationCategory.None, 'None'],
+  [ConfigurationCategory.StaticMeasures, 'Static measures'],
+  [ConfigurationCategory.TimeRelatedMeasures, 'Time related measures'],
+  [ConfigurationCategory.StatusCheckRelatedMeasures, 'Status check related measures'],
+  [ConfigurationCategory.ReportGeneratorValue, 'Report generator related predefined strings'],
 ])
 
-export class MeasurementInfo implements IReportMeasurementInfo {
+export class ConfigurationInfo implements IReportConfigInfo {
   public Description
   public PresentationValue
   public Value
   public ConfigurationName
   public ConfigValue
-  public MeasureCategory
+  public ConfigurationCategory
 
   constructor(
     label: string,
@@ -30,30 +32,30 @@ export class MeasurementInfo implements IReportMeasurementInfo {
     value: string | number,
     configName: string,
     defaultConfigValue: string | number,
-    measureCategory: MeasureCategory
+    configurationCategory: ConfigurationCategory
   ) {
     this.Description = label
     this.PresentationValue = presentationValue
     this.Value = value
     this.ConfigurationName = configName
     this.ConfigValue = defaultConfigValue
-    this.MeasureCategory = measureCategory
+    this.ConfigurationCategory = configurationCategory
   }
 }
 
-export class ReportMeasurementEntry implements IReportMeasurementEntry {
+export class ReportConfigurationEntry implements IReportConfigurationEntry {
   public Id
   public Info
-  public ReportMeasureCallback: MeasureCallback
-  constructor(id = '', info: IReportMeasurementInfo, measureCallback: MeasureCallback = () => '') {
+  public PullRequestCallback: PullRequestCallback
+  constructor(id = '', info: IReportConfigInfo, measureCallback: PullRequestCallback = () => '') {
     this.Id = id
     this.Info = info
-    this.ReportMeasureCallback = measureCallback
+    this.PullRequestCallback = measureCallback
   }
 }
 
 export class Report implements IReport {
   public Id = ''
   public Description = ''
-  public Entries: ReportMeasurementEntry[] = []
+  public Entries: ReportConfigurationEntry[] = []
 }

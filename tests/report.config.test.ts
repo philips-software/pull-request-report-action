@@ -1,20 +1,20 @@
 // for license and copyright look at the repository
 
 import { table, tsMarkdown } from 'ts-markdown'
-import { GetActiveMeasures, MetricTable, UpdateConfigValues } from '../src/Report.Measures'
+import { GetActiveMeasures, ReportConfigurationTable, UpdateConfigValues } from '../src/Report.Measures'
 import * as fs from 'fs'
-import { MeasureCategory, ReportMeasurementEntry } from '../src/Report.Definitions'
+import { ConfigurationCategory, ReportConfigurationEntry } from '../src/Report.Definitions'
 import yaml from 'js-yaml'
 import { ConfigurationInputs } from '../src/action.config.type'
 
 let rows: { Name: string; Description: string; DefaultValue: string | number; Category: string }[] = []
 
 beforeAll(() => {
-  const configItems = MetricTable.map((item) => {
+  const configItems = ReportConfigurationTable.map((item) => {
     return {
       description: item.Info.Description,
       name: item.Info.ConfigurationName,
-      category: MeasureCategory[item.Info.MeasureCategory],
+      category: ConfigurationCategory[item.Info.ConfigurationCategory],
       defaultValue: item.Info.ConfigValue,
     }
   })
@@ -68,9 +68,9 @@ test('Generate valid input keys and patch the action.yml file', () => {
   fs.writeFileSync('action.yml', serializedString)
 })
 
-const CreateMetricTableCopy = (table: ReportMeasurementEntry[]): ReportMeasurementEntry[] => {
+const CreateMetricTableCopy = (table: ReportConfigurationEntry[]): ReportConfigurationEntry[] => {
   const tableAsJson = JSON.stringify(table)
-  return JSON.parse(tableAsJson) as ReportMeasurementEntry[]
+  return JSON.parse(tableAsJson) as ReportConfigurationEntry[]
 }
 
 test('Update the MetricTable with config values from workflow', () => {
@@ -86,9 +86,10 @@ test('Update the MetricTable with config values from workflow', () => {
   inputValuesFromWorkflow.ShowTimeSpendOnBranchBeforePrMerged = 'no'
   inputValuesFromWorkflow.ShowTimeToMergeAfterLastReview = 'no'
   // create copy of MetricTable
-  const myMetricTable: ReportMeasurementEntry[] = CreateMetricTableCopy(MetricTable)
+  const myMetricTable: ReportConfigurationEntry[] = CreateMetricTableCopy(ReportConfigurationTable)
   expect(
-    MetricTable.filter((item) => item.Info.ConfigurationName === 'ShowTimeToMergeAfterLastReview')[0].Info.ConfigValue
+    ReportConfigurationTable.filter((item) => item.Info.ConfigurationName === 'ShowTimeToMergeAfterLastReview')[0].Info
+      .ConfigValue
   ).toBe('yes')
   UpdateConfigValues(inputValuesFromWorkflow, myMetricTable)
   expect(
@@ -109,7 +110,7 @@ test('Filter the MetricTable with config values from workflow', () => {
   inputValuesFromWorkflow.ShowTimeSpendOnBranchBeforePrMerged = 'no'
   inputValuesFromWorkflow.ShowTimeToMergeAfterLastReview = 'yes'
   // create copy of MetricTable
-  const myMetricTable: ReportMeasurementEntry[] = CreateMetricTableCopy(MetricTable)
+  const myMetricTable: ReportConfigurationEntry[] = CreateMetricTableCopy(ReportConfigurationTable)
   UpdateConfigValues(inputValuesFromWorkflow, myMetricTable)
   const activeMeasures = GetActiveMeasures(myMetricTable)
   expect(

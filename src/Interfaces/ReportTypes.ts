@@ -1,29 +1,29 @@
 // for license and copyright look at the repository
 
-import { MeasureCategory } from '../Report.Definitions'
+import { ConfigurationCategory } from '../Report.Definitions'
 import { IPullRequest } from './PullRequestTypes'
 
-export type MeasureCallback = (pr: IPullRequest) => string | number
+export type PullRequestCallback = (pr: IPullRequest) => string | number
 
-export interface IReportMeasurementInfo {
+export interface IReportConfigInfo {
   Description: string
   PresentationValue: string | number
   Value: string | number
   ConfigurationName: string
-  MeasureCategory: MeasureCategory
+  ConfigurationCategory: ConfigurationCategory
   ConfigValue: string | number
 }
 
-export interface IReportMeasurementEntry {
+export interface IReportConfigurationEntry {
   Id: string
-  Info: IReportMeasurementInfo
-  ReportMeasureCallback: MeasureCallback
+  Info: IReportConfigInfo
+  PullRequestCallback: PullRequestCallback
 }
 
 export interface IReport {
   Id: string
   Description: string
-  Entries: IReportMeasurementEntry[]
+  Entries: IReportConfigurationEntry[]
 }
 
 export interface EventWithTime {
