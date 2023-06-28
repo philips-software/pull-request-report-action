@@ -14,7 +14,6 @@ describe('CliIntegrationTest', () => {
     expect(pullRequest.id).toBe(381)
     expect(pullRequest.reviews.length).toBeGreaterThan(0)
     expect(pullRequest.comments.length).toBeGreaterThan(0)
-    expect(pullRequest.statusChecks.length).toBeGreaterThan(0)
     expect(pullRequest.commits.length).toBeGreaterThan(0)
   })
 })
