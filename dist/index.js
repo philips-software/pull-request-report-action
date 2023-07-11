@@ -634,7 +634,7 @@ class ReportGenerator {
     }
     GetMeasurementEntries(entries) {
         if (entries !== undefined && entries !== null && entries.length > 0) {
-            return entries.filter((entry) => Report_Definitions_1.ConfigurationCategory[entry.Info.ConfigurationCategory].endsWith("Measures"));
+            return entries.filter((entry) => Report_Definitions_1.ConfigurationCategory[entry.Info.ConfigurationCategory].endsWith('Measures'));
         }
         return [];
     }
@@ -847,7 +847,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.run = exports.SanitizeMarkdownComment = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const GitHubCliHelper_1 = __nccwpck_require__(7058);
@@ -856,12 +856,16 @@ const Report_Definitions_1 = __nccwpck_require__(7693);
 const Report_Measures_1 = __nccwpck_require__(1245);
 const PullRequest_Definitions_1 = __nccwpck_require__(2049);
 const fs = __importStar(__nccwpck_require__(7147));
-const CreatePRCommentFile = (prData, commentText, include_raw_data) => {
+const SanitizeMarkdownComment = (comment) => {
+    return comment.replaceAll(/<!--/g, '&lt;!--').replaceAll(/-->/g, '--&gt;');
+};
+exports.SanitizeMarkdownComment = SanitizeMarkdownComment;
+const CreatePRCommentFile = (raw_json_data, commentText, include_raw_data) => {
     // generate random file name
     const fileName = Math.random().toString(36).substring(7) + '.md';
     let jsonString = '';
     if (include_raw_data) {
-        jsonString = JSON.stringify(prData);
+        jsonString = raw_json_data;
     }
     // write report string to file
     fs.writeFileSync(fileName, `<!-- ${jsonString} -->\n${commentText}`);
@@ -887,6 +891,7 @@ const run = async (inputsFromWorkflow) => {
     const activeConfigValues = (0, Report_Measures_1.GetActiveMeasures)(Report_Measures_1.ReportConfigurationTable);
     // get PR data from github cli
     const cliPullRequestData = await (0, GitHubCliHelper_1.GetPullRequestData)(github.context.issue.number);
+    const cliPullRequestDataAsString = (0, exports.SanitizeMarkdownComment)(JSON.stringify(cliPullRequestData));
     // transform PR data to a typed model
     const pullRequestDataModel = PullRequest_Definitions_1.PullRequest.CreateFromJson(cliPullRequestData);
     // generate the report of the typed model
@@ -895,12 +900,12 @@ const run = async (inputsFromWorkflow) => {
     // create report
     report.Description = inputsFromWorkflow.ReportTitle;
     const reportAsString = generator.Generate(pullRequestDataModel, report);
-    const commentPath = CreatePRCommentFile(cliPullRequestData, reportAsString, IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment));
+    const commentPath = CreatePRCommentFile(cliPullRequestDataAsString, reportAsString, IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment));
     if (IsConfigValueYes(inputsFromWorkflow.AddPrReportAsComment)) {
         await (0, GitHubCliHelper_1.AddCommentToPR)(commentPath, pullRequestDataModel.id);
     }
     const jsonPath = commentPath.replace(/\.md$/, '.json');
-    fs.writeFileSync(jsonPath, JSON.stringify(cliPullRequestData));
+    fs.writeFileSync(jsonPath, cliPullRequestDataAsString);
     core.setOutput('json_report_path', jsonPath);
     return 0;
 };
