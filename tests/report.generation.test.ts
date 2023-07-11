@@ -21,7 +21,7 @@ test('Check if header is generated as expected', () => {
   const report = new Report()
   report.Description = 'Pull Request Report for PR'
   expect(tsMarkdown([generator.GenerateHeader(PullRequestStatModel, report)])).toBe(
-    '# Pull Request Report for PR (#381)'
+    '# Pull Request Report for PR (#381)',
   )
 })
 

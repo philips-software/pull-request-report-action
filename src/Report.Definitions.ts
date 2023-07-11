@@ -32,7 +32,7 @@ export class ConfigurationInfo implements IReportConfigInfo {
     value: string | number,
     configName: string,
     defaultConfigValue: string | number,
-    configurationCategory: ConfigurationCategory
+    configurationCategory: ConfigurationCategory,
   ) {
     this.Description = label
     this.PresentationValue = presentationValue
