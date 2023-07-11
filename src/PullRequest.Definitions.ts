@@ -225,16 +225,16 @@ export class PullRequest implements IPullRequest {
     pr.headRepositoryOwner = cliPullRequestObject['headRepositoryOwner']
 
     pr.commits = ParseArrayOfType<IPullRequestCommit>(cliPullRequestObject['commits'], (commit) =>
-      PullRequestCommit.CreateFromJson(commit)
+      PullRequestCommit.CreateFromJson(commit),
     )
     pr.reviews = ParseArrayOfType<IPullRequestReview>(cliPullRequestObject['reviews'], (review) =>
-      PullRequestReview.CreateFromJson(review)
+      PullRequestReview.CreateFromJson(review),
     )
     pr.comments = ParseArrayOfType<IPullRequestComment>(cliPullRequestObject['comments'], (comment) =>
-      PullRequestComment.CreateFromJson(comment)
+      PullRequestComment.CreateFromJson(comment),
     )
     pr.statusChecks = ParseArrayOfType<IStatusCheck>(cliPullRequestObject['statusCheckRollup'], (statusCheck) =>
-      StatusCheck.CreateFromJson(statusCheck)
+      StatusCheck.CreateFromJson(statusCheck),
     )
     pr.fileChangeSummary = FileChangeSummary.CreateFromJson(cliPullRequestObject)
     return pr

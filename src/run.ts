@@ -27,7 +27,7 @@ const CreatePRCommentFile = (prData: unknown, commentText: string, include_raw_d
 
 const GenerateReport = (
   activeConfigValues: ReportConfigurationEntry[],
-  pullRequestDataModel: IPullRequest
+  pullRequestDataModel: IPullRequest,
 ): IReport => {
   const report = new Report()
   report.Entries = activeConfigValues
@@ -64,7 +64,7 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
   const commentPath = CreatePRCommentFile(
     cliPullRequestData,
     reportAsString,
-    IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment as string)
+    IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment as string),
   )
   if (IsConfigValueYes(inputsFromWorkflow.AddPrReportAsComment as string)) {
     await AddCommentToPR(commentPath, pullRequestDataModel.id)

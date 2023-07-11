@@ -26,7 +26,7 @@ import { ConfigurationInputs } from './action.config.type'
 
 export const UpdateConfigValues = (
   configValues: ConfigurationInputs,
-  measurementEntries: Array<ReportConfigurationEntry>
+  measurementEntries: Array<ReportConfigurationEntry>,
 ): Array<ReportConfigurationEntry> => {
   // Update measurementEntries with config values from inputs
   measurementEntries.forEach((entry) => {
@@ -51,10 +51,10 @@ ReportConfigurationTable.push(
       0,
       'IncludeRawDataAsMarkdownComment',
       'yes',
-      ConfigurationCategory.ReportGeneratorValue
+      ConfigurationCategory.ReportGeneratorValue,
     ),
-    () => 0
-  )
+    () => 0,
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -66,10 +66,10 @@ ReportConfigurationTable.push(
       0,
       'AddPrReportAsComment',
       'yes',
-      ConfigurationCategory.ReportGeneratorValue
+      ConfigurationCategory.ReportGeneratorValue,
     ),
-    () => 0
-  )
+    () => 0,
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -81,25 +81,25 @@ ReportConfigurationTable.push(
       0,
       'ReportTitle',
       'Pull Request Report',
-      ConfigurationCategory.ReportGeneratorValue
+      ConfigurationCategory.ReportGeneratorValue,
     ),
-    () => 0
-  )
+    () => 0,
+  ),
 )
 
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
     'additions',
     new ConfigurationInfo('Number of added lines', 0, 0, 'ShowAdditions', 'yes', ConfigurationCategory.StaticMeasures),
-    GetAddedLines
-  )
+    GetAddedLines,
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
     'deleted',
     new ConfigurationInfo('Number of deleted lines', 0, 0, 'ShowDeleted', 'yes', ConfigurationCategory.StaticMeasures),
-    GetDeletedLines
-  )
+    GetDeletedLines,
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -110,10 +110,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfChangedFiles',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    GetChangedFilesCount
-  )
+    GetChangedFilesCount,
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -124,10 +124,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfCommits',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    GetCommitsCount
-  )
+    GetCommitsCount,
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -138,10 +138,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfReviews',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    GetReviewCount
-  )
+    GetReviewCount,
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -152,10 +152,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfComments',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    GetCommentCount
-  )
+    GetCommentCount,
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -166,10 +166,10 @@ ReportConfigurationTable.push(
       0,
       'ShowPRLeadTime',
       'yes',
-      ConfigurationCategory.TimeRelatedMeasures
+      ConfigurationCategory.TimeRelatedMeasures,
     ),
-    (pr) => MillisecondsToReadableDuration(GetLeadTimeForPullRequest(pr))
-  )
+    (pr) => MillisecondsToReadableDuration(GetLeadTimeForPullRequest(pr)),
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -180,10 +180,10 @@ ReportConfigurationTable.push(
       0,
       'ShowTimeSpendOnBranchBeforePrCreated',
       'yes',
-      ConfigurationCategory.TimeRelatedMeasures
+      ConfigurationCategory.TimeRelatedMeasures,
     ),
-    (pr) => MillisecondsToReadableDuration(GetTimeSpendOnBranchBeforePRCreated(pr))
-  )
+    (pr) => MillisecondsToReadableDuration(GetTimeSpendOnBranchBeforePRCreated(pr)),
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -194,10 +194,10 @@ ReportConfigurationTable.push(
       0,
       'ShowTimeSpendOnBranchBeforePrMerged',
       'yes',
-      ConfigurationCategory.TimeRelatedMeasures
+      ConfigurationCategory.TimeRelatedMeasures,
     ),
-    (pr) => MillisecondsToReadableDuration(GetTimeSpendOnBranchBeforePRMerged(pr))
-  )
+    (pr) => MillisecondsToReadableDuration(GetTimeSpendOnBranchBeforePRMerged(pr)),
+  ),
 )
 ReportConfigurationTable.push(
   new ReportConfigurationEntry(
@@ -208,10 +208,10 @@ ReportConfigurationTable.push(
       0,
       'ShowTimeToMergeAfterLastReview',
       'yes',
-      ConfigurationCategory.TimeRelatedMeasures
+      ConfigurationCategory.TimeRelatedMeasures,
     ),
-    (pr) => MillisecondsToReadableDuration(GetTimeToMergeAfterLastReview(pr))
-  )
+    (pr) => MillisecondsToReadableDuration(GetTimeToMergeAfterLastReview(pr)),
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -223,10 +223,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfCommentOnlyReviews',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    (pr) => GetNumberOfCommentOnlyReviews(pr)
-  )
+    (pr) => GetNumberOfCommentOnlyReviews(pr),
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -238,10 +238,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfRequestedChangeReviews',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    (pr) => GetNumberOfRequestedChangeReviews(pr)
-  )
+    (pr) => GetNumberOfRequestedChangeReviews(pr),
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -253,10 +253,10 @@ ReportConfigurationTable.push(
       0,
       'ShowNumberOfApprovedReviews',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    (pr) => GetNumberOfApprovedReviews(pr)
-  )
+    (pr) => GetNumberOfApprovedReviews(pr),
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -268,10 +268,10 @@ ReportConfigurationTable.push(
       0,
       'ShowTimeTotalRuntimeForLastStatusCheckRun',
       'yes',
-      ConfigurationCategory.StatusCheckRelatedMeasures
+      ConfigurationCategory.StatusCheckRelatedMeasures,
     ),
-    (pr) => MillisecondsToReadableDuration(GetTotalRuntimeForLastStatusCheckRun(pr))
-  )
+    (pr) => MillisecondsToReadableDuration(GetTotalRuntimeForLastStatusCheckRun(pr)),
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -283,10 +283,10 @@ ReportConfigurationTable.push(
       0,
       'ShowTimeSpendOnPrForLastStatusCheckRun',
       'yes',
-      ConfigurationCategory.StatusCheckRelatedMeasures
+      ConfigurationCategory.StatusCheckRelatedMeasures,
     ),
-    (pr) => MillisecondsToReadableDuration(GetTimeSpendInPrForLastStatusCheckRun(pr))
-  )
+    (pr) => MillisecondsToReadableDuration(GetTimeSpendInPrForLastStatusCheckRun(pr)),
+  ),
 )
 
 ReportConfigurationTable.push(
@@ -298,8 +298,8 @@ ReportConfigurationTable.push(
       0,
       'ShowTotalNumberOfParticipants',
       'yes',
-      ConfigurationCategory.StaticMeasures
+      ConfigurationCategory.StaticMeasures,
     ),
-    (pr) => GetTotalNumberOfParticipants(pr)
-  )
+    (pr) => GetTotalNumberOfParticipants(pr),
+  ),
 )

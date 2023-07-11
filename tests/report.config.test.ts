@@ -89,11 +89,12 @@ test('Update the MetricTable with config values from workflow', () => {
   const myMetricTable: ReportConfigurationEntry[] = CreateMetricTableCopy(ReportConfigurationTable)
   expect(
     ReportConfigurationTable.filter((item) => item.Info.ConfigurationName === 'ShowTimeToMergeAfterLastReview')[0].Info
-      .ConfigValue
+      .ConfigValue,
   ).toBe('yes')
   UpdateConfigValues(inputValuesFromWorkflow, myMetricTable)
   expect(
-    myMetricTable.filter((item) => item.Info.ConfigurationName === 'ShowTimeToMergeAfterLastReview')[0].Info.ConfigValue
+    myMetricTable.filter((item) => item.Info.ConfigurationName === 'ShowTimeToMergeAfterLastReview')[0].Info
+      .ConfigValue,
   ).toBe('no')
 })
 
@@ -115,10 +116,10 @@ test('Filter the MetricTable with config values from workflow', () => {
   const activeMeasures = GetActiveMeasures(myMetricTable)
   expect(
     activeMeasures.filter((item) => item.Info.ConfigurationName === 'ShowTimeToMergeAfterLastReview')[0].Info
-      .ConfigValue
+      .ConfigValue,
   ).toBe('yes')
   expect(
-    activeMeasures.filter((item) => item.Info.ConfigurationName === 'ShowTimeSpendOnBranchBeforePrMerged').length
+    activeMeasures.filter((item) => item.Info.ConfigurationName === 'ShowTimeSpendOnBranchBeforePrMerged').length,
   ).toBe(0)
 })
 
@@ -140,7 +141,7 @@ test('Generate configuration arguments for action code', () => {
   for (const key in inputValues) {
     fs.appendFileSync(
       generatedArgumentFile,
-      `  ${key}: core.getInput('${key}', { required: ${inputValues[key].required.toString()} }),\n`
+      `  ${key}: core.getInput('${key}', { required: ${inputValues[key].required.toString()} }),\n`,
     )
     fs.appendFileSync(generatedTypeFile, `  ${key}: string | number\n`)
   }

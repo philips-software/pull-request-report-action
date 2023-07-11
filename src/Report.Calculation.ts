@@ -22,7 +22,7 @@ export const GenerateEventTimeline = (pullRequest: IPullRequest): EventWithTime[
       date: new Date(commit.authorDate),
       event_instance: commit,
       time: 0,
-    }))
+    })),
   )
   events.push(
     pullRequest.reviews.map((review) => ({
@@ -30,7 +30,7 @@ export const GenerateEventTimeline = (pullRequest: IPullRequest): EventWithTime[
       date: new Date(review.submittedAt),
       event_instance: review,
       time: 0,
-    }))
+    })),
   )
   events.push(
     pullRequest.statusChecks.map((statusCheck) => ({
@@ -38,7 +38,7 @@ export const GenerateEventTimeline = (pullRequest: IPullRequest): EventWithTime[
       date: new Date(statusCheck.completedAt),
       event_instance: statusCheck,
       time: 0,
-    }))
+    })),
   )
   events.push(
     pullRequest.comments.map((comment) => ({
@@ -46,7 +46,7 @@ export const GenerateEventTimeline = (pullRequest: IPullRequest): EventWithTime[
       date: new Date(comment.createdAt),
       event_instance: comment,
       time: 0,
-    }))
+    })),
   )
   events.push([
     { type: 'mergedAt', date: new Date(pullRequest.mergedAt), event_instance: pullRequest.mergedAt, time: 0 },
