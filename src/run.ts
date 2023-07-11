@@ -10,6 +10,10 @@ import { ConfigurationInputs } from './action.config.type'
 import { IPullRequest } from './Interfaces/PullRequestTypes'
 import { IReport } from './Interfaces/ReportTypes'
 
+export const SanitizeMarkdownComment = (comment: string): string => {
+  return comment.replace(/<!--/g, '&lt;!--').replace(/-->/g, '--&gt;')
+}
+
 const CreatePRCommentFile = (prData: unknown, commentText: string, include_raw_data: boolean): string => {
   // generate random file name
   const fileName = Math.random().toString(36).substring(7) + '.md'
@@ -18,6 +22,8 @@ const CreatePRCommentFile = (prData: unknown, commentText: string, include_raw_d
   if (include_raw_data) {
     jsonString = JSON.stringify(prData)
   }
+
+  jsonString = SanitizeMarkdownComment(jsonString)
 
   // write report string to file
   fs.writeFileSync(fileName, `<!-- ${jsonString} -->\n${commentText}`)
