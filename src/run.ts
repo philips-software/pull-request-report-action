@@ -11,19 +11,17 @@ import { IPullRequest } from './Interfaces/PullRequestTypes'
 import { IReport } from './Interfaces/ReportTypes'
 
 export const SanitizeMarkdownComment = (comment: string): string => {
-  return comment.replace(/<!--/g, '&lt;!--').replace(/-->/g, '--&gt;')
+  return comment.replaceAll(/<!--/g, '&lt;!--').replaceAll(/-->/g, '--&gt;')
 }
 
-const CreatePRCommentFile = (prData: unknown, commentText: string, include_raw_data: boolean): string => {
+const CreatePRCommentFile = (raw_json_data: string, commentText: string, include_raw_data: boolean): string => {
   // generate random file name
   const fileName = Math.random().toString(36).substring(7) + '.md'
   let jsonString = ''
 
   if (include_raw_data) {
-    jsonString = JSON.stringify(prData)
+    jsonString = raw_json_data
   }
-
-  jsonString = SanitizeMarkdownComment(jsonString)
 
   // write report string to file
   fs.writeFileSync(fileName, `<!-- ${jsonString} -->\n${commentText}`)
@@ -58,6 +56,8 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
 
   // get PR data from github cli
   const cliPullRequestData = await GetPullRequestData(github.context.issue.number)
+  const cliPullRequestDataAsString = SanitizeMarkdownComment(JSON.stringify(cliPullRequestData))
+
   // transform PR data to a typed model
   const pullRequestDataModel = PullRequest.CreateFromJson(cliPullRequestData)
   // generate the report of the typed model
@@ -68,7 +68,7 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
   const reportAsString = generator.Generate(pullRequestDataModel, report)
 
   const commentPath = CreatePRCommentFile(
-    cliPullRequestData,
+    cliPullRequestDataAsString,
     reportAsString,
     IsConfigValueYes(inputsFromWorkflow.IncludeRawDataAsMarkdownComment as string),
   )
@@ -77,7 +77,7 @@ export const run = async (inputsFromWorkflow: ConfigurationInputs): Promise<numb
   }
 
   const jsonPath = commentPath.replace(/\.md$/, '.json')
-  fs.writeFileSync(jsonPath, JSON.stringify(cliPullRequestData))
+  fs.writeFileSync(jsonPath, cliPullRequestDataAsString)
   core.setOutput('json_report_path', jsonPath)
 
   return 0
