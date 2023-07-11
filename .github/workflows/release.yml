@@ -18,8 +18,6 @@ jobs:
         uses: PaulHatch/semantic-version@61243c92212f7939f340bd2f8072bee529ac77df #v5.0.3
         with:
           tag_prefix: "v"
-          # only changes for yaml files will create a tag and release
-          change_path: "dist/*"
 
       - if: ${{ steps.versioning.outputs.changed == 'true'}}
         name: Create tag
