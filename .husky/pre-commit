@@ -1,5 +1,14 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm test
+yarn test
 yarn format-check
+yarn build
+yarn package
+
+git diff --cached --name-only | grep -qE 'dist/' && {
+ echo "You have staged changes in the dist/ folder. Please run yarn build and yarn package before commiting."
+ exit 1
+ }
+
+ exit 0
