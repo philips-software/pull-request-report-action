@@ -1176,10 +1176,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.4.8":
-  version: 20.4.8
-  resolution: "@types/node@npm:20.4.8"
-  checksum: 86a3963c0c7af3410553d1dfa4b018a20b3cb3ab4d8e8ffe27408b6338c5de0374b0bf379bc705da2205b466daa751ccfe062f453ba9bde34fdb0e5163ca6a68
+"@types/node@npm:20.5.6":
+  version: 20.5.6
+  resolution: "@types/node@npm:20.5.6"
+  checksum: d2ce44f1cfa3fd00fe7426f7cf9a46d680cd57802b874ed5618e7d9101a9c6b8de37f08c0e7185ee06fb363ad492549c3ea69665c7e8e31c7813210ed8e89005
   languageName: node
   linkType: hard
 
@@ -4279,7 +4279,7 @@ __metadata:
     "@tsconfig/node16": 16.1.0
     "@types/jest": 29.5.3
     "@types/js-yaml": ^4.0.5
-    "@types/node": 20.4.8
+    "@types/node": 20.5.6
     "@typescript-eslint/eslint-plugin": 6.3.0
     "@typescript-eslint/parser": 6.3.0
     "@vercel/ncc": 0.36.1
