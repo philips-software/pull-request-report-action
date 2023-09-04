@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
       - name: Generate PR report
         id: generate_report
-        uses: philips-software/pull-request-report-action@da0318eea0069afcfb89f0a077c79c1d97e35e32 # v0.0.2
+        uses: philips-software/pull-request-report-action@6d08a2c0a96d666770637b54e050d6512e9d45b0 # v0.1.2
         with:
           ShowNumberOfChangedFiles: 'no'
           ShowTimeToMergeAfterLastReview: 'no'
