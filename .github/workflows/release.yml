@@ -15,7 +15,7 @@ jobs:
 
       - name: Automatic version
         id: versioning
-        uses: PaulHatch/semantic-version@61243c92212f7939f340bd2f8072bee529ac77df #v5.0.3
+        uses: PaulHatch/semantic-version@5f6f89c4e06f9e1a2df00821598c0ac1f9085094 #v5.2.1
         with:
           tag_prefix: "v"
 
