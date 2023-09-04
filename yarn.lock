@@ -4282,7 +4282,7 @@ __metadata:
     pinst: ^3.0.0
     prettier: 3.0.3
     ts-jest: 29.1.1
-    ts-markdown: ^0.3.0-beta.1
+    ts-markdown: ^1.0.0
     typescript: 5.1.6
   languageName: unknown
   linkType: soft
@@ -4642,10 +4642,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-markdown@npm:^0.3.0-beta.1":
-  version: 0.3.0-beta.1
-  resolution: "ts-markdown@npm:0.3.0-beta.1"
-  checksum: 6dfee949fe0facdc19df32e15e7af2e90756e9c2b6b16eeb2837faf3b4ab6691d5fe01363a760aadadff0d1d088faefc27d0bcf50636340cc6c89890129d0746
+"ts-markdown@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "ts-markdown@npm:1.0.0"
+  checksum: cbe92a92bfb9f2237bf0228a9c2d3cd823f03dff41c63fb3199fadf7561f2c01492cd06ccd2a8d20c367becb09466a4e69215ee4605db49dfbf524abdddb4ea9
   languageName: node
   linkType: hard
 
