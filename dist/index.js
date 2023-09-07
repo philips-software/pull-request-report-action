@@ -12383,23 +12383,9 @@ function tsMarkdown(data, options) {
     document = options.onDocumentFootnoteAppended
         ? options.onDocumentFootnoteAppended(data, document, options)
         : document;
-    // TODO: Formalize a post-render callback option
-    document = correctInvalidMidWordBoldAndItalics(document);
     return document;
 }
 exports.tsMarkdown = tsMarkdown;
-/**
- * Finds and corrects and mid-word bold/italics that use hyphens, changing the hyphens to asterisks, per best practice: https://www.markdownguide.org/basic-syntax/#bold-best-practices
- *
- * @param document the rendered document
- * @returns document with mid-world bold and italics set to asterisks
- */
-function correctInvalidMidWordBoldAndItalics(document) {
-    return document
-        .replace(/(?<pretext>[^\_^\s])(?<prefix1>[\_]{3})(?<text1>[^\s^\_]+)(?<suffix1>[\_]{3})|(?<prefix2>[\_]{3})(?<text2>[^\s^\_]+)(?<suffix2>[\_]{3})(?<posttext>[^\_^\s])/g, '$<pretext>***$<text1>$<text2>***$<posttext>')
-        .replace(/(?<pretext>[^\_^\s])(?<prefix1>[\_]{2})(?<text1>[^\s^\_]+)(?<suffix1>[\_]{2})|(?<prefix2>[\_]{2})(?<text2>[^\s^\_]+)(?<suffix2>[\_]{2})(?<posttext>[^\_^\s])/g, '$<pretext>**$<text1>$<text2>**$<posttext>')
-        .replace(/(?<pretext>[^\_^\s])(?<prefix1>[\_]{1})(?<text1>[^\s^\_]+)(?<suffix1>[\_]{1})|(?<prefix2>[\_]{1})(?<text2>[^\s^\_]+)(?<suffix2>[\_]{1})(?<posttext>[^\_^\s])/g, '$<pretext>*$<text1>$<text2>*$<posttext>');
-}
 /**
  * Reduces an array of markdown entries to a single string.
  *
