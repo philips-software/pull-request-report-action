@@ -1,14 +1,32 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+yarn lint
 yarn test
 yarn format-check
 yarn build
 yarn package
 
-git diff --cached --name-only | grep -qE 'dist/' && {
- echo "You have staged changes in the dist/ folder. Please run yarn build and yarn package before commiting."
- exit 1
- }
+# check if there are any files that are untracked or not staged
+untrackedOrNotStaged=$(git status --porcelain)
 
- exit 0
+# check if the dist/ folder contains changes that are from the last build and package commands
+if git diff --quiet HEAD -- dist/; then
+  echo "dist/ folder is up to date"
+else
+    echo "dist/ folder contains changes that are not staged for commit."
+    echo "Your action code is not up to date!!!"
+    echo "Please check the changes in the dist/ folder."
+    echo "---"
+    echo "Please run the following commands and commit the changes:"
+    echo "  yarn build"
+    echo "  yarn package"
+    echo "---"
+    if [ -z "$untrackedOrNotStaged" ]; then
+      echo "First take care to commit the changes in the dist/ folder."
+      exit 1
+    fi
+    echo "Commit will be created but take care about the changes in the dist/ folder."
+fi
+
+exit 0
