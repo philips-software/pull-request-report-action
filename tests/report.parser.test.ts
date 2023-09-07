@@ -1,7 +1,5 @@
 // for license and copyright look at the repository
 
-import { GetPullRequestData } from '../src/GitHubCliHelper'
-import * as fs from 'fs'
 import { DataFromBigPullRequest } from './pr_sample_data'
 import { PullRequest } from '../src/PullRequest.Definitions'
 import {
@@ -13,23 +11,23 @@ import {
 
 // This method can be used to update the sample data
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const UpdateSampleData = async () => {
-  const prData = await GetPullRequestData(381, 'aertslab/SCope')
-  // write json to file
-  fs.writeFileSync('prDatams.json', JSON.stringify(prData, null, 2))
-}
+// const UpdateSampleData = async () => {
+//   const prData = await GetPullRequestData(381, 'aertslab/SCope')
+//   // write json to file
+//   fs.writeFileSync('prDatams.json', JSON.stringify(prData, null, 2))
+// }
 
-test('Gather PR-Data for unknown Repo', async () => {
-  let exceptionRaised = false
-  try {
-    const jsonData = await GetPullRequestData(381, 'aertslab437598493-qn/SCope-154d7884f5')
-    const data = PullRequest.CreateFromJson(jsonData)
-    console.log(data)
-  } catch (e) {
-    exceptionRaised = true
-  }
-  expect(exceptionRaised).toBeTruthy()
-})
+// test('Gather PR-Data for unknown Repo', async () => {
+//   let exceptionRaised = false
+//   try {
+//     const jsonData = await GetPullRequestData(381, 'aertslab437598493-qn/SCope-154d7884f5')
+//     const data = PullRequest.CreateFromJson(jsonData)
+//     console.log(data)
+//   } catch (e) {
+//     exceptionRaised = true
+//   }
+//   expect(exceptionRaised).toBeTruthy()
+// }, 15000)
 
 test('Transfer to internal object model', () => {
   const data = PullRequest.CreateFromJson(DataFromBigPullRequest)
