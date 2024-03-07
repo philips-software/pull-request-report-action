@@ -73,12 +73,10 @@ exports.AddCommentToPR = AddCommentToPR;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PullRequest = exports.StatusCheck = exports.PullRequestCommit = exports.CommitAuthor = exports.PullRequestComment = exports.PullRequestReview = exports.FileChangeSummary = void 0;
 class FileChangeSummary {
-    constructor() {
-        this.additions = 0;
-        this.deletions = 0;
-        this.commits = 0;
-        this.changedFilesList = 0;
-    }
+    additions = 0;
+    deletions = 0;
+    commits = 0;
+    changedFilesList = 0;
     static CreateFromJson(json) {
         const jsonObject = json;
         const summary = new FileChangeSummary();
@@ -91,12 +89,10 @@ class FileChangeSummary {
 }
 exports.FileChangeSummary = FileChangeSummary;
 class PullRequestReview {
-    constructor() {
-        this.authorLogin = '';
-        this.state = '';
-        this.submittedAt = '';
-        this.body = '';
-    }
+    authorLogin = '';
+    state = '';
+    submittedAt = '';
+    body = '';
     static CreateFromJson(json) {
         const jsonObject = json;
         const review = new PullRequestReview();
@@ -109,15 +105,13 @@ class PullRequestReview {
 }
 exports.PullRequestReview = PullRequestReview;
 class PullRequestComment {
-    constructor() {
-        this.authorLogin = '';
-        this.createdAt = '';
-        this.body = '';
-        this.authorAssociation = '';
-        this.id = '';
-        this.url = '';
-        this.viewerDidAuthor = false;
-    }
+    authorLogin = '';
+    createdAt = '';
+    body = '';
+    authorAssociation = '';
+    id = '';
+    url = '';
+    viewerDidAuthor = false;
     static CreateFromJson(json) {
         const jsonObject = json;
         const comment = new PullRequestComment();
@@ -140,12 +134,10 @@ function ParseArrayOfType(array, cb) {
     return parsedArray;
 }
 class CommitAuthor {
-    constructor() {
-        this.email = '';
-        this.name = '';
-        this.login = '';
-        this.id = '';
-    }
+    email = '';
+    name = '';
+    login = '';
+    id = '';
     static CreateFromJson(json) {
         const jsonObject = json;
         const author = new CommitAuthor();
@@ -158,15 +150,13 @@ class CommitAuthor {
 }
 exports.CommitAuthor = CommitAuthor;
 class PullRequestCommit {
-    constructor() {
-        this.authors = [];
-        this.committer = '';
-        this.authorDate = '';
-        this.commitDate = '';
-        this.commitHeader = '';
-        this.commitBody = '';
-        this.commitId = '';
-    }
+    authors = [];
+    committer = '';
+    authorDate = '';
+    commitDate = '';
+    commitHeader = '';
+    commitBody = '';
+    commitId = '';
     static CreateFromJson(json) {
         const jsonObject = json;
         const commit = new PullRequestCommit();
@@ -182,15 +172,13 @@ class PullRequestCommit {
 }
 exports.PullRequestCommit = PullRequestCommit;
 class StatusCheck {
-    constructor() {
-        this.workflowName = '';
-        this.startedAt = '';
-        this.completedAt = '';
-        this.conclusion = '';
-        this.status = '';
-        this.name = '';
-        this.detailsUrl = '';
-    }
+    workflowName = '';
+    startedAt = '';
+    completedAt = '';
+    conclusion = '';
+    status = '';
+    name = '';
+    detailsUrl = '';
     static CreateFromJson(json) {
         const jsonObject = json;
         const statusCheck = new StatusCheck();
@@ -205,30 +193,28 @@ class StatusCheck {
 }
 exports.StatusCheck = StatusCheck;
 class PullRequest {
-    constructor() {
-        this.id = 0;
-        this.title = '';
-        this.createdAt = '';
-        this.updatedAt = '';
-        this.closedAt = '';
-        this.mergedAt = '';
-        this.body = '';
-        this.author = '';
-        this.state = '';
-        this.mergeable = '';
-        this.mergeStateStatus = '';
-        this.isDraft = false;
-        this.baseRefName = '';
-        this.headRefName = '';
-        this.headRefOid = '';
-        this.headRepository = '';
-        this.headRepositoryOwner = '';
-        this.commits = [];
-        this.reviews = [];
-        this.comments = [];
-        this.statusChecks = [];
-        this.fileChangeSummary = new FileChangeSummary();
-    }
+    id = 0;
+    title = '';
+    createdAt = '';
+    updatedAt = '';
+    closedAt = '';
+    mergedAt = '';
+    body = '';
+    author = '';
+    state = '';
+    mergeable = '';
+    mergeStateStatus = '';
+    isDraft = false;
+    baseRefName = '';
+    headRefName = '';
+    headRefOid = '';
+    headRepository = '';
+    headRepositoryOwner = '';
+    commits = [];
+    reviews = [];
+    comments = [];
+    statusChecks = [];
+    fileChangeSummary = new FileChangeSummary();
     static CreateFromJson(cliPullRequest) {
         const cliPullRequestObject = cliPullRequest;
         const pr = new PullRequest();
@@ -541,6 +527,12 @@ exports.ConfigurationCategoryTitleMap = new Map([
     [ConfigurationCategory.ReportGeneratorValue, 'Report generator related predefined strings'],
 ]);
 class ConfigurationInfo {
+    Description;
+    PresentationValue;
+    Value;
+    ConfigurationName;
+    ConfigValue;
+    ConfigurationCategory;
     constructor(label, presentationValue, value, configName, defaultConfigValue, configurationCategory) {
         this.Description = label;
         this.PresentationValue = presentationValue;
@@ -552,6 +544,9 @@ class ConfigurationInfo {
 }
 exports.ConfigurationInfo = ConfigurationInfo;
 class ReportConfigurationEntry {
+    Id;
+    Info;
+    PullRequestCallback;
     constructor(id = '', info, measureCallback = () => '') {
         this.Id = id;
         this.Info = info;
@@ -560,11 +555,9 @@ class ReportConfigurationEntry {
 }
 exports.ReportConfigurationEntry = ReportConfigurationEntry;
 class Report {
-    constructor() {
-        this.Id = '';
-        this.Description = '';
-        this.Entries = [];
-    }
+    Id = '';
+    Description = '';
+    Entries = [];
 }
 exports.Report = Report;
 
@@ -618,10 +611,8 @@ exports.ReportGenerator = void 0;
 const ts_markdown_1 = __nccwpck_require__(6524);
 const Report_Definitions_1 = __nccwpck_require__(7693);
 class ReportGenerator {
-    constructor() {
-        this.DescriptionHeaderLabel = 'Description';
-        this.ValueHeaderLabel = 'Value';
-    }
+    DescriptionHeaderLabel = 'Description';
+    ValueHeaderLabel = 'Value';
     Generate(pr, report) {
         const header = this.GenerateHeader(pr, report);
         const table = this.GenerateMeasureTable(pr, report);
@@ -1471,7 +1462,7 @@ class OidcClient {
                 .catch(error => {
                 throw new Error(`Failed to get ID Token. \n 
         Error Code : ${error.statusCode}\n 
-        Error Message: ${error.result.message}`);
+        Error Message: ${error.message}`);
             });
             const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
             if (!id_token) {
