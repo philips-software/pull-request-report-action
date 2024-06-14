@@ -4118,12 +4118,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.2.5":
-  version: 3.2.5
-  resolution: "prettier@npm:3.2.5"
+"prettier@npm:3.3.2":
+  version: 3.3.2
+  resolution: "prettier@npm:3.3.2"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 8/2ee4e1417572372afb7a13bb446b34f20f1bf1747db77cf6ccaf57a9be005f2f15c40f903d41a6b79eec3f57fff14d32a20fb6dee1f126da48908926fe43c311
+  checksum: 10c0/39ed27d17f0238da6dd6571d63026566bd790d3d0edac57c285fbab525982060c8f1e01955fe38134ab10f0951a6076da37f015db8173c02f14bc7f0803a384c
   languageName: node
   linkType: hard
 
@@ -4321,7 +4321,7 @@ __metadata:
     husky: "npm:^8.0.0"
     jest: "npm:29.7.0"
     pinst: "npm:^3.0.0"
-    prettier: "npm:3.2.5"
+    prettier: "npm:3.3.2"
     ts-jest: "npm:29.1.4"
     ts-markdown: "npm:^1.0.0"
     typescript: "npm:5.4.5"
