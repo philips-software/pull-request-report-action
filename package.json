@@ -21,7 +21,7 @@
     "ts-markdown": "^1.0.0"
   },
   "devDependencies": {
-    "@tsconfig/node20": "20.1.2",
+    "@tsconfig/node20": "20.1.4",
     "@types/jest": "29.5.12",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "20.14.2",
