@@ -1318,21 +1318,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:7.13.0":
-  version: 7.13.0
-  resolution: "@typescript-eslint/parser@npm:7.13.0"
+"@typescript-eslint/parser@npm:7.13.1":
+  version: 7.13.1
+  resolution: "@typescript-eslint/parser@npm:7.13.1"
   dependencies:
-    "@typescript-eslint/scope-manager": "npm:7.13.0"
-    "@typescript-eslint/types": "npm:7.13.0"
-    "@typescript-eslint/typescript-estree": "npm:7.13.0"
-    "@typescript-eslint/visitor-keys": "npm:7.13.0"
+    "@typescript-eslint/scope-manager": "npm:7.13.1"
+    "@typescript-eslint/types": "npm:7.13.1"
+    "@typescript-eslint/typescript-estree": "npm:7.13.1"
+    "@typescript-eslint/visitor-keys": "npm:7.13.1"
     debug: "npm:^4.3.4"
   peerDependencies:
     eslint: ^8.56.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/8cf58116d6577c9459db3e3047e337dc41d914bf222a33b20e149515d037e09e6171fbac5af02b66aa6fbad81dd492fa5b7bcd44aaf659d4e9b02ab23100f955
+  checksum: 10c0/455d067bfb81fa3d133c75ebc4d8d7f2de5001441585f5b58dc8b0d4380d7397dc3745e11a9299d596dfa581265fdcdea6c28b2ddd2d3b542869c851ecd52fcd
   languageName: node
   linkType: hard
 
@@ -4374,7 +4374,7 @@ __metadata:
     "@types/js-yaml": "npm:^4.0.9"
     "@types/node": "npm:20.14.4"
     "@typescript-eslint/eslint-plugin": "npm:7.13.1"
-    "@typescript-eslint/parser": "npm:7.13.0"
+    "@typescript-eslint/parser": "npm:7.13.1"
     "@vercel/ncc": "npm:0.38.1"
     eslint: "npm:9.5.0"
     eslint-plugin-jest: "npm:28.6.0"
