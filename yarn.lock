@@ -4444,7 +4444,7 @@ __metadata:
     pinst: "npm:^3.0.0"
     prettier: "npm:3.3.2"
     ts-jest: "npm:29.2.2"
-    ts-markdown: "npm:^1.1.0"
+    ts-markdown: "npm:^1.2.0"
     typescript: "npm:5.5.3"
   languageName: unknown
   linkType: soft
@@ -4817,10 +4817,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-markdown@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "ts-markdown@npm:1.1.0"
-  checksum: 10c0/059a28456e68cc2ccca1521dea2355cd35587884e25f82f5d51d2bf0c4c55e854629bdb336d87d73b6b8b79890e1c0aea90a5574f01175c96f867b976c1d20f9
+"ts-markdown@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "ts-markdown@npm:1.2.0"
+  dependencies:
+    yaml: "npm:^2.4.5"
+  checksum: 10c0/33fcbb78a87a65600221a6a1c1c303e1242fef1ff86fbca78b78ec4a47bd5af75d05c0e8e7bacff9a60fce3befb2d8da8b81295ea36dc04546c468303940c894
   languageName: node
   linkType: hard
 
@@ -5048,6 +5050,15 @@ __metadata:
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 8/343617202af32df2a15a3be36a5a8c0c8545208f3d3dfbc6bb7c3e3b7e8c6f8e7485432e4f3b88da3031a6e20afa7c711eded32ddfb122896ac5d914e75848d5
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.4.5":
+  version: 2.4.5
+  resolution: "yaml@npm:2.4.5"
+  bin:
+    yaml: bin.mjs
+  checksum: 10c0/e1ee78b381e5c710f715cc4082fd10fc82f7f5c92bd6f075771d20559e175616f56abf1c411f545ea0e9e16e4f84a83a50b42764af5f16ec006328ba9476bb31
   languageName: node
   linkType: hard
 
