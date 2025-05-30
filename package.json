@@ -24,7 +24,7 @@
     "@tsconfig/node20": "20.1.5",
     "@types/jest": "29.5.14",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "22.15.23",
+    "@types/node": "22.15.26",
     "@typescript-eslint/eslint-plugin": "8.33.0",
     "@typescript-eslint/parser": "8.33.0",
     "@vercel/ncc": "0.38.3",
