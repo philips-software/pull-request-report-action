@@ -75,6 +75,7 @@ export interface IPullRequest {
   fileChangeSummary: IFileChangeSummary
 }
 
+// This interface is used to represent the approval of a pull request
 export interface IPullReqeustApproval {
   authorLogin: string
   state: string
