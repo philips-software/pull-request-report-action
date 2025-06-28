@@ -74,3 +74,9 @@ export interface IPullRequest {
   statusChecks: IStatusCheck[]
   fileChangeSummary: IFileChangeSummary
 }
+
+export interface IPullReqeustApproval {
+  authorLogin: string
+  state: string
+  submittedAt: string
+}
