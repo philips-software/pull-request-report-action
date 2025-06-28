@@ -6,6 +6,7 @@ import {
   type IPullRequestComment,
   type IPullRequestCommit,
   type IPullRequestReview,
+  type IPullReqeustApproval,
   type IStatusCheck,
   ICommitAuthor,
 } from './Interfaces/PullRequestTypes'
