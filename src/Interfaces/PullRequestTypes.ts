@@ -50,6 +50,12 @@ export interface IStatusCheck {
   name: string
 }
 
+export interface IPullRequestApproval {
+  approver: string,
+  approvalState: string,
+  approvalDate: string,
+}
+
 export interface IPullRequest {
   id: number
   title: string
@@ -72,5 +78,6 @@ export interface IPullRequest {
   reviews: IPullRequestReview[]
   comments: IPullRequestComment[]
   statusChecks: IStatusCheck[]
+  approval: IPullRequestApproval
   fileChangeSummary: IFileChangeSummary
 }
