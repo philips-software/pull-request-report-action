@@ -7,6 +7,7 @@ import {
   type IPullRequestCommit,
   type IPullRequestReview,
   type IStatusCheck,
+  type IPullRequestApproval,
   ICommitAuthor,
 } from './Interfaces/PullRequestTypes'
 
@@ -174,6 +175,7 @@ export class PullRequest implements IPullRequest {
   public headRefOid = ''
   public headRepository = ''
   public headRepositoryOwner = ''
+  public approval: IPullRequestApproval
   public commits: IPullRequestCommit[] = []
   public reviews: IPullRequestReview[] = []
   public comments: IPullRequestComment[] = []
@@ -218,6 +220,7 @@ export class PullRequest implements IPullRequest {
     pr.mergeable = cliPullRequestObject['mergeable']
     pr.mergeStateStatus = cliPullRequestObject['mergeStateStatus']
     pr.isDraft = cliPullRequestObject['isDraft']
+    pr.approval = cliPullRequestObject['approval'] 
     pr.baseRefName = cliPullRequestObject['baseRefName']
     pr.headRefName = cliPullRequestObject['headRefName']
     pr.headRefOid = cliPullRequestObject['headRefOid']
