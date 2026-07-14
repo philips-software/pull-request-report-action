@@ -84,5 +84,5 @@ outputs:
   json-report-path:
     description: Path to the json report
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
